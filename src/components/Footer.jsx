@@ -36,11 +36,11 @@
 const Footer = () => {
   return (
 
-    <footer class="text-gray-600 border border-secondary mt-10 rounded-xl p-3 mb-4 ">
+    <footer class="bg-gradient-to-b from-[#3A4347] via-[#2C3437] to-[#1E2426] text-background-light mt-10 rounded-xl p-3 mb-4 ">
       <div class="container mx-auto grid grid-cols-3">
         <div class="w-64  md:mx-0 mx-auto text-center md:text-left">
           <div className='h-full  flex flex-col items-center justify-center'>
-            <h2 class="title-font font-semibold text-gray-900 text-sm mb-3 ">About Us</h2>
+            <h2 class="title-font font-semibold text-background-light text-sm mb-3 ">About Us</h2>
             <p className="text-body text-center mb-5">A modern blog CMS for publishing articles, tutorials, and stories. Built for creators and developers.</p>
             <div className='flex justify-center gap-4 w-full'>
               <a href="#"
@@ -78,17 +78,17 @@ const Footer = () => {
           </div>
         </div>
         <div class="flex justify-center md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left text-center">
-          <div class=" w-fit">
-            <h2 class="title-font font-semibold text-gray-900 text-sm mb-3">Quick Links</h2>
+          <div class=" w-fit text-background-light">
+            <h2 class="title-font font-semibold  text-sm mb-3">Quick Links</h2>
             <nav class="list-none mb-10">
               <li>
-                <a className="text-gray-600 hover:text-primary hover:underline" href="/">Home</a>
+                <a className=" hover:text-accent hover:underline" href="/">Home</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-primary hover:underline" href="/blog">Blog</a>
+                <a className=" hover:text-accent hover:underline" href="/blog">Blog</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-primary hover:underline" href="/about">About Us</a>
+                <a className=" hover:text-accent hover:underline" href="/about">About Us</a>
               </li>
 
             </nav>
@@ -97,19 +97,19 @@ const Footer = () => {
         <div className="flex flex-wrap justify-center  md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left text-center">
 
           <div className='w-fit'>
-            <h2 className='title-font font-semibold mb-3 text-secondary text-sm'>Category</h2>
+            <h2 className='title-font font-semibold mb-3 text-sm'>Category</h2>
             <div className='flex flex-col'>
               <li className="list-none">
-                <a href="#" className="text-gray-600 hover:text-primary hover:underline">Buisness</a>
+                <a href="#" className=" hover:text-accent hover:underline">Buisness</a>
               </li>
               <li className="list-none">
-                <a href="#" className="text-gray-600 hover:text-primary hover:underline">Technology</a>
+                <a href="#" className=" hover:text-accent hover:underline">Technology</a>
               </li>
               <li className="list-none">
-                <a href="#" className="text-gray-600 hover:text-primary hover:underline">Lifestyle</a>
+                <a href="#" className=" hover:text-accent hover:underline">Lifestyle</a>
               </li>
               <li className="list-none">
-                <a href="#" className="text-gray-600 hover:text-primary hover:underline">Health</a>
+                <a href="#" className=" hover:text-accent hover:underline">Health</a>
               </li>
 
             </div>
@@ -119,7 +119,7 @@ const Footer = () => {
 
       </div>
       <div className="mt-5">
-        <p className="text-center text-gray-600">
+        <p className="text-center text-background-light">
           Copyright © 2023 Your Blog. All rights reserved.
         </p>
       </div>
