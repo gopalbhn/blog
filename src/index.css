@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+
+
+@theme {
+  --color-primary: #A15649;
+  --color-secondary: #2C3437;
+  --color-accent: #D4AF37;
+
+  --color-primary-hover: #854338;
+  --color-secondary-hover: #4A5458;
+  --color-accent-hover: #B3922E;
+
+  --color-background-light: #E7E5E4;
+
+
+  --color-background: #fff;
+  --color-surface: #f8fafc;
+
+  --color-success: #22c55e;
+  --color-warning: #eab308;
+  --color-error: #ef4444;
+
+  --font-sans: "Inter", sans-serif;
+  --font-heading:"Georgia",sans-serif;
+
+
+ --text-hero: 48px;
+--text-header: 36px;
+--text-title: 22px;
+--text-body: 16px;
+--text-small: 14px;
+
+}
+
+
+
+
+:root {
+
+  font-family: var(--font-sans);
+  background-color: var(--color-background-light);
+  color: var(--color-secondary);
+}
+
+@property --r {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+
+.rotatingGradient {
+  background: conic-gradient(from var(--r) at center,
+      var(--color-primary) 0%,
+      #ec7c7c 10%,
+      var(--color-primary) 20%);
+
+  animation: rotating 3s linear infinite;
+}
+
+.rotatingGradient:hover .label {
+  color: var(--color-text);
+}
+
+.rotatingGradient:hover::after {
+  background: var(--color-primary-hover);
+  color: var(--color-primary-hover);
+  transition: background-color 0.3s ease-in-out;
+}
+
+@keyframes rotating {
+  from {
+    --r: 0deg;
+
+  }
+
+  to {
+    --r: 360deg;
+  }
+}
