@@ -141,16 +141,15 @@ export default function LoginComponent() {
     setIsLogin(!isLogin);
   }
 
-
+  console.log(score)
   const checkPasswordStrength = (password) => {
     let score = 0;
 
-    if (password.length >= 8) setScore(score + 1);
-    if (/[a-z]/.test(password)) setScore(score + 1);
-    if (/[A-Z]/.test(password)) setScore(score + 1);
-    if (/\d/.test(password)) setScore(score + 1);
-    if (/[ !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/.test(password))
-      setScore(score + 1);
+    if (password.length >= 8) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/\d/.test(password)) score++;
+    if (/[ !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/.test(password)) score++;
 
     if (score <= 2) return "weak";
     if (score <= 4) return "medium";
@@ -172,7 +171,7 @@ export default function LoginComponent() {
       toast.error("Password must be at least 8 characters long")
       return
     }
-    const res = await fetch("http://localhost:3000/api/user/login", {
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -236,17 +235,6 @@ export default function LoginComponent() {
           <div className="flex flex-col items-center space-y-2">
 
 
-            {/* <div className="space-y-2 text-center">
-              <h1 className="text-3xl font-semibold text-foreground">
-                Welcome back!
-              </h1>
-              <p className="text-muted-foreground text-sm">
-                First time here?{" "}
-                <a href="#" className="text-foreground hover:underline">
-                  Sign up for free
-                </a>
-              </p>
-            </div> */}
 
             <div className="w-full h-full relative flex items-center justify-center  border border-secondary rounded-xl p-1 mb-5">
               <button className={`h-10 rounded-xl px-4 w-1/2 ${isLogin ? "bg-primary text-white" : "text-secondary"}`} onClick={toggleLogin}>Login</button>
@@ -275,7 +263,7 @@ export default function LoginComponent() {
                     <Label htmlFor={`email-${id}`}>Email</Label>
                     <Input type="email" id={`email- ${id}`} placeholder="Your email" className="w-full rounded-xl" onChange={(e) => setEmail(e.target.value)} required />
                     <Label htmlFor={`phone-${id}`}>Phone Number</Label>
-                    <Input type="text" id={`phone-${id}`} placeholder="Your phone number" className="w-full rounded-xl" onChange={(e) => setPhone(e.target.value)} required />
+                    <Input type="text" id={`phone-${id}`} placeholder="Your phone number" className="w-full rounded-xl" onChange={(e) => setPhoneNumber(e.target.value)} required />
 
 
                     <Label htmlFor={`password-${id}`}>Password</Label>
@@ -287,19 +275,19 @@ export default function LoginComponent() {
 
 
                       <div className="mt-2 space-y-1 text-xs">
-                        <p className={password.length >= 8 ? "text-green-500" : "text-gray-400"}>
+                        <p className={password.length >= 8 ? "text-green-500" : "text-red-400"}>
                           ✓ At least 8 characters
                         </p>
 
-                        <p className={/[a-z]/.test(password) ? "text-green-500" : "text-gray-400"}>
+                        <p className={/[a-z]/.test(password) ? "text-green-500" : "text-red-400"}>
                           ✓ Lowercase letter
                         </p>
 
-                        <p className={/[A-Z]/.test(password) ? "text-green-500" : "text-gray-400"}>
+                        <p className={/[A-Z]/.test(password) ? "text-green-500" : "text-red-400"}>
                           ✓ Uppercase letter
                         </p>
 
-                        <p className={/\d/.test(password) ? "text-green-500" : "text-gray-400"}>
+                        <p className={/\d/.test(password) ? "text-green-500" : "text-red-400"}>
                           ✓ Number
                         </p>
 
@@ -329,7 +317,7 @@ export default function LoginComponent() {
                     </Button>
                   ) : (
 
-                    score == 5 ? (
+                    passwordStatus == "strong" ? (
                       <Button onClick={handleRegister} variant="gradient" width={"100%"} height={50}>
                         Register
                       </Button>

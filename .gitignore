@@ -12,10 +12,10 @@ dist
 dist-ssr
 *.local
 .env
-/server/.env
-/server/node_modules
-/node_modules
-/src/assets
+server/.env
+server/node_modules
+node_modules
+
 /public
 # Editor directories and files
 .vscode/*

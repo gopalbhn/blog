@@ -1,19 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "../assets/hero.png";
-import { ArrowBigRight, ChevronDown, ChevronRight, FileText, NotebookPen, SendHorizonal, Settings, ShieldPlus, StickyNote, User, UserKey, UserRoundPen, Users } from "lucide-react";
-import GradientButton from "@/components/ui/button-1";
-import { useNavigate } from "react-router-dom";
-import ShinyButton from "@/components/ui/shiny-button";
+import { ChevronDown, ChevronRight, } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import FeatureCard from "@/components/FeatureCard";
-import { motion, transform } from "framer-motion";
+import { motion } from "framer-motion";
 import Footer from "@/components/Footer";
 import Button from "@/components/ui/button";
 import { faq, features } from "../lib/data.js"
 import { blogs } from "@/lib/data";
 import BlogCard from "@/components/BlogCard";
+import { toast } from "react-toastify";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [show, setShow] = useState(null)
+  const [searchParams] = useSearchParams()
+  useEffect(()=>{
+    if(searchParams.get("login") =="success" ){
+      toast.success("Logged In successfully")
+      
+      setTimeout(()=>{
+        navigate('')
+      },1000)
+      
+    }
+  },[])
+
 
   return (
     <div className="h-full  px-10 ">
@@ -44,10 +55,10 @@ const Dashboard = () => {
 
             Automate content distribution across channels
           </p>
-           <p className="text-body text-gray-600 font-normal leading-relaxed flex gap-2 items-center mt-2">
+          <p className="text-body text-gray-600 font-normal leading-relaxed flex gap-2 items-center mt-2">
             <span className="h-2 w-2 rounded-full bg-gray-900 mr-2"></span>
 
-           Keep your content organized and up to date
+            Keep your content organized and up to date
           </p>
           <div className="mt-5 flex items-center gap-5">
             <Button

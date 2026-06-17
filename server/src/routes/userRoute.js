@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { getInfo, LogOut, loginWithMagicLink, verifyMagicLink, registerUser, loginUser, googleLogin, googleCallback } from "../controllers/userController.js"
-import { authenticateJWT } from "../middlewares/auth.js";
+import { LogOut, verifyMagicLink, registerUser, loginUser, googleLogin, googleCallback } from "../controllers/userController.js"
+
 
 const router = Router();
 router.get('/test', (req, res) => {
@@ -12,6 +12,6 @@ router.get('/google-login', googleLogin);
 router.get('/google-callback', googleCallback);
 router.get("/verify/:token", verifyMagicLink);
 router.post("/logout", LogOut)
-router.get('/me', authenticateJWT, getInfo);
+
 
 export default router;

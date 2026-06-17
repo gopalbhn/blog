@@ -86,12 +86,12 @@ const loginUser = async (req, res) => {
   }
   const token = generateJwt(user);
   res.cookie("token", token, {
-    httpOnly: false,
-    sameSite: "none",
+    httpOnly: true,
+
     secure: true,
-    path: "/",
     maxAge: 24 * 60 * 60 * 1000,
   });
+  user.password = undefined;
   res.status(200).json({
     success: true,
     message: "User logged in successfully",
@@ -160,7 +160,7 @@ const googleCallback = async (req, res) => {
       path: "/",
       maxAge: 24 * 60 * 60 * 1000,
     });
-    res.redirect(process.env.FRONTEND_URI)
+    res.redirect(`${process.env.FRONTEND_URI}?login=success`)
     return;
   }
 
@@ -183,8 +183,7 @@ const googleCallback = async (req, res) => {
 
 const verifyMagicLink = async (req, res) => {
   const { token } = req.params;
-  console.log("token", token);
-  console.log("JWT_SECRET", process.env.JWT_SECRET);
+
   const user = jwt.verify(token, process.env.JWT_SECRET);
   if (!user.email) {
     return res.status(400).json({
@@ -204,10 +203,8 @@ const verifyMagicLink = async (req, res) => {
   const newtoken = generateJwt(newuser);
 
   res.cookie("token", newtoken, {
-    httpOnly: false,
-    sameSite: "none",
+    httpOnly: true,
     secure: true,
-    path: "/",
     maxAge: 24 * 60 * 60 * 1000,
   });
   res.status(200).json({
@@ -231,14 +228,7 @@ const LogOut = async (req, res) => {
   });
 };
 
-const getInfo = async (req, res) => {
-  const user = req.user;
-  res.status(200).json({
-    success: true,
-    message: "User information",
-    user: user,
-  });
-};
+
 
 
 export {
@@ -246,7 +236,7 @@ export {
   loginUser,
   loginWithMagicLink,
   verifyMagicLink,
-  getInfo,
+
   LogOut,
   googleLogin,
   googleCallback

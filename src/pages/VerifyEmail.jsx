@@ -9,7 +9,7 @@ const VerifyEmail = () => {
     const navigate = useNavigate();
 
     async function verifyUser() {
-        const res = await fetch(`http://localhost:3000/api/user/verify/${token}`, {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/user/verify/${token}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
