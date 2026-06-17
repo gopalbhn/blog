@@ -36,7 +36,7 @@
 const Footer = () => {
   return (
 
-    <footer class="bg-gradient-to-b from-[#3A4347] via-[#2C3437] to-[#1E2426] text-background-light mt-10 rounded-xl p-3 mb-4 ">
+    <footer class="bg-gradient-to-b from-[#3A4347] via-[#2C3437] to-[#1E2426] text-background-light mt-15 rounded-xl p-3 mb-4 ">
       <div class="container mx-auto grid grid-cols-3">
         <div class="w-64  md:mx-0 mx-auto text-center md:text-left">
           <div className='h-full  flex flex-col items-center justify-center'>

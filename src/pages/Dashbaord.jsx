@@ -16,8 +16,8 @@ const Dashboard = () => {
   const [show, setShow] = useState(null)
 
   return (
-    <div className="h-full  px-10 space-y-10">
-      <div className="h-full w-full grid grid-cols-2 gap-10 items-start mt-10 ">
+    <div className="h-full  px-10 ">
+      <section className="h-full w-full grid grid-cols-2 gap-10 items-start mt-10 ">
         <div>
           <p className="text-md font-semibold text-primary mb-2 flex items-center gap-2 ">
             <span className="h-2 w-2 rounded-full bg-primary animate-pulse"></span> Trusted by 5,000+ Bloggers Worldwide
@@ -44,19 +44,24 @@ const Dashboard = () => {
 
             Automate content distribution across channels
           </p>
+           <p className="text-body text-gray-600 font-normal leading-relaxed flex gap-2 items-center mt-2">
+            <span className="h-2 w-2 rounded-full bg-gray-900 mr-2"></span>
+
+           Keep your content organized and up to date
+          </p>
           <div className="mt-5 flex items-center gap-5">
             <Button
               variant={"gradient"}
               onClick={() => navigate("/blog")}
-              height={60}
-              width={250}
+              height={50}
+              width={200}
             >
               Get Started
             </Button>
             <Button
               onClick={() => navigate("/blog")}
-              height={60}
-              width={250}
+              height={50}
+              width={200}
               className="rounded-xl "
             >
               Explore Features
@@ -70,9 +75,9 @@ const Dashboard = () => {
             className="h-full w-full object-cover"
           />
         </div>
-      </div>
-      <div className="h-90 w-full ">
-        <h1 className="text-header font-heading font-bold text-gray-900 text-center ">
+      </section>
+      <section className="h-full w-full mt-12">
+        <h1 className="text-header font-heading font-bold text-gray-900 ">
           {" "}
           <span className="text-primary">Our</span> Features
         </h1>
@@ -84,7 +89,7 @@ const Dashboard = () => {
             delayChildren: 0.05,
             staggerChildren: 0.08
           }}
-          className=" relative w-full  h-75 flex items-center justify-center mt-3 ">
+          className=" relative w-full  min-h-75 flex items-center justify-center mt-3 ">
 
           {features.map((feature, index) => {
             const initialRotate = (index - 1) * 5;
@@ -126,9 +131,9 @@ const Dashboard = () => {
           }
           )}
         </motion.div>
-      </div>
-      <div className="h-95 w-full  ">
-        <h1 className="text-header font-heading font-bold  text-center">Recent <span className="text-primary">Blogs</span></h1>
+      </section>
+      <section className="h-full w-full mt-12 ">
+        <h1 className="text-header font-heading font-bold  ">Recent <span className="text-primary">Blogs</span></h1>
         <div className="w-full grid grid-cols-4 gap-5 mt-5">
           {blogs.slice(0, 4).map((blog, index) => (
             <BlogCard
@@ -143,10 +148,10 @@ const Dashboard = () => {
             />
           ))}
         </div>
-      </div>
+      </section>
 
-      <div className="h-full w-full   ">
-        <h1 className="text-header font-heading font-bold text-gray-900 text-center mt-5">
+      <section className="h-full w-full  mt-12 ">
+        <h1 className="text-header font-heading font-bold ">
           Frequently Asked Questions
         </h1>
         <div className="flex justify-center items-center mt-5 w-[100%] mx-auto mb-2 ">
@@ -186,7 +191,7 @@ const Dashboard = () => {
 
           </div>
         </div>
-      </div>
+      </section>
       <Footer />
 
     </div>

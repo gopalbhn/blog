@@ -15,7 +15,7 @@ const BlogCard = ({
       whileHover={{ y: -10, scale: 1.03 }}
       className="
     w-70
-    h-70
+    h-full
     overflow-hidden
     rounded-xl
     border
@@ -48,19 +48,19 @@ const BlogCard = ({
           {excerpt}
         </p>
 
-        <div className="mt-2 flex items-center gap-2">
+        <div className="mt-2 flex items-center gap-2 mb-3">
           <img
             src={avatar}
             alt={author}
             className="h-7 w-7 rounded-full object-cover"
           />
 
-          <div className="min-w-0">
+          <div className="min-w-0 " >
             <p className="text-xs font-semibold text-secondary truncate">
               {author}
             </p>
 
-            <div className="flex items-center gap-1 text-[10px] text-stone-500">
+            <div className="flex items-center gap-1 text-[10px] text-stone-500 ">
               <Clock size={10} />
               <span>{publishedAt}</span>
             </div>
