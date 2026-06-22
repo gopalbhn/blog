@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import userRouter from "./routes/userRoute.js"
+import postRoute from "./routes/postRoute.js"
 import cookieParser from "cookie-parser";
 
 
@@ -15,5 +16,6 @@ app.use(cors({
 app.use(express.json());
 
 app.use("/api/user", userRouter)
+app.use("/api/post", postRoute)
 
 export default app;

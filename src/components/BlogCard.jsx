@@ -1,5 +1,6 @@
 import { Clock } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const BlogCard = ({
   image,
@@ -7,9 +8,11 @@ const BlogCard = ({
   title,
   excerpt,
   author,
-  avatar,
   publishedAt,
+  id,
 }) => {
+
+  const navigate = useNavigate();
   return (
     <motion.div
       whileHover={{ y: -10, scale: 1.03 }}
@@ -26,6 +29,9 @@ const BlogCard = ({
     flex flex-col
     relative
   "
+      onClick={() => {
+        navigate(`/blog/${id}`)
+      }}
     >
       <img
         src={image}
@@ -49,20 +55,16 @@ const BlogCard = ({
         </p>
 
         <div className="mt-2 flex items-center gap-2 mb-3">
-          <img
-            src={avatar}
-            alt={author}
-            className="h-7 w-7 rounded-full object-cover"
-          />
+
 
           <div className="min-w-0 " >
             <p className="text-xs font-semibold text-secondary truncate">
-              {author}
+              {author.name}
             </p>
 
             <div className="flex items-center gap-1 text-[10px] text-stone-500 ">
               <Clock size={10} />
-              <span>{publishedAt}</span>
+              <span>{new Date(publishedAt).toDateString()}</span>
             </div>
           </div>
         </div>

@@ -14,17 +14,44 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [show, setShow] = useState(null)
   const [searchParams] = useSearchParams()
-  useEffect(()=>{
-    if(searchParams.get("login") =="success" ){
+  const [post, setPost] = useState([])
+  useEffect(() => {
+    if (searchParams.get("login") == "success") {
       toast.success("Logged In successfully")
-      
-      setTimeout(()=>{
-        navigate('')
-      },1000)
-      
-    }
-  },[])
 
+      setTimeout(() => {
+        navigate('')
+      }, 1000)
+
+    }
+
+    getPost();
+
+  }, [])
+
+  const getPost = async () => {
+    const res = await fetch(
+      `${import.meta.env.VITE_BACKEND_URI}/api/post`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include"
+      }
+    )
+
+    const data = await res.json();
+    console.log(data)
+    if (data.success) {
+      setPost(data.post)
+
+      console.log(post)
+    } else {
+      toast.error("Unable to fetch Post")
+    }
+
+  }
 
   return (
     <div className="h-full  px-10 ">
@@ -73,6 +100,7 @@ const Dashboard = () => {
               onClick={() => navigate("/blog")}
               height={50}
               width={200}
+              variant="shiny"
               className="rounded-xl "
             >
               Explore Features
@@ -87,7 +115,7 @@ const Dashboard = () => {
           />
         </div>
       </section>
-      <section className="h-full w-full mt-12">
+      <section className="h-full w-full mt-24">
         <h1 className="text-header font-heading font-bold text-gray-900 ">
           {" "}
           <span className="text-primary">Our</span> Features
@@ -143,25 +171,26 @@ const Dashboard = () => {
           )}
         </motion.div>
       </section>
-      <section className="h-full w-full mt-12 ">
+      <section className="h-full w-full mt-24 mb-2">
         <h1 className="text-header font-heading font-bold  ">Recent <span className="text-primary">Blogs</span></h1>
         <div className="w-full grid grid-cols-4 gap-5 mt-5">
-          {blogs.slice(0, 4).map((blog, index) => (
+          {post.slice(0, 4).map((blog, index) => (
             <BlogCard
               key={index}
               image={blog.image}
               title={blog.title}
-              excerpt={blog.excerpt}
+              excerpt={blog.description}
               author={blog.author}
               category={blog.category}
-              avatar={blog.avatar}
-              publishedAt={blog.publishedAt}
+              id={blog._id}
+              publishedAt={blog.careatedAt}
+
             />
           ))}
         </div>
       </section>
 
-      <section className="h-full w-full  mt-12 ">
+      <section className="h-full w-full  mt-24 ">
         <h1 className="text-header font-heading font-bold ">
           Frequently Asked Questions
         </h1>

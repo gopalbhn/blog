@@ -1,48 +1,15 @@
-// import React from 'react'
 
-// const Footer = () => {
-//   return (
-//     <div className='mt-10 h-40 w-full bg-background-light px-10 border-t border-secondary'>
-//       <div className='h-full w-full flex items-center justify-between'>
-//         <div className='h-full w-2/3 flex flex-col items-center justify-center'>
-//           <h1 className='text-xl font-semibold mb-2'>About Us</h1>
-//           <p>A modern blog CMS for publishing articles, tutorials, and stories. Built for creators and developers.</p>
-//         </div>
-
-//         <div className='h-vull w-full flex flex-col items-center justify-center'>
-//           <h1 className='text-xl font-semibold mb-2 text-secondary'>Quick Links</h1>
-//           <a className='hover:text-accent hover:underline' href="#">Home</a>
-//           <a className='hover:text-accent hover:underline' href="#">About</a>
-//           <a className='hover:text-accent hover:underline' href="#">Blog</a>
-//         </div>
-//         <div className='h-full w-full flex flex-col items-center justify-center '>
-//           <h1 className='text-xl font-semibold mb-2 text-secondary'>Follow Us</h1>
-//           <div className='flex gap-4'>
-//             <a className='hover:text-accent hover:underline' href="#">Facebook</a>
-//             <a className='hover:text-accent hover:underline' href="#">Twitter</a>
-//             <a className='hover:text-accent hover:underline' href="#">Instagram</a>
-//           </div>
-
-//         </div>
-
-//       </div>
-//     </div>
-
-//   );
-// };
-
-// export default Footer;
 
 const Footer = () => {
   return (
 
-    <footer class="bg-gradient-to-b from-[#3A4347] via-[#2C3437] to-[#1E2426] text-background-light mt-15 rounded-xl p-3 mb-4 ">
-      <div class="container mx-auto grid grid-cols-3">
-        <div class="w-64  md:mx-0 mx-auto text-center md:text-left">
-          <div className='h-full  flex flex-col items-center justify-center'>
-            <h2 class="title-font font-semibold text-background-light text-sm mb-3 ">About Us</h2>
-            <p className="text-body text-center mb-5">A modern blog CMS for publishing articles, tutorials, and stories. Built for creators and developers.</p>
-            <div className='flex justify-center gap-4 w-full'>
+    <footer class="bg-gradient-to-b from-[#3A4347] via-[#2C3437] to-[#1E2426] text-background-light mt-24 rounded-xl p-3 mb-4 ">
+      <div class="container mx-auto grid grid-cols-3 items-center justify-center">
+        <div class="w-full   mx-auto text-center md:text-left">
+          <div className='h-full w-64 flex flex-col mx-auto items-center justify-center'>
+            <h2 class="title-font font-semibold text-background-light text-sm mb-3 text-left w-full ">About Us</h2>
+            <p className="text-body text-left mb-5">A modern blog CMS for publishing articles, tutorials, and stories. Built for creators and developers.</p>
+            <div className='flex justify-start gap-4 w-full'>
               <a href="#"
                 class="hover:text-[#1877f2] transition duration-300
               hover:drop-shadow-[0_0_10px_#1877f2]
@@ -77,7 +44,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div class="flex justify-center md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left text-center">
+        <div class="flex justify-center md:pl-20  md:mt-0 mt-10 md:text-left text-center">
           <div class=" w-fit text-background-light">
             <h2 class="title-font font-semibold  text-sm mb-3">Quick Links</h2>
             <nav class="list-none mb-10">
@@ -94,35 +61,36 @@ const Footer = () => {
             </nav>
           </div>
         </div>
-        <div className="flex flex-wrap justify-center  md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left text-center">
+        <div className="flex  justify-center  md:pl-20  md:mt-0  md:text-left text-center">
 
           <div className='w-fit'>
             <h2 className='title-font font-semibold mb-3 text-sm'>Category</h2>
-            <div className='flex flex-col'>
-              <li className="list-none">
+            <ul className="list-none mb-10" >
+              <li >
                 <a href="#" className=" hover:text-accent hover:underline">Buisness</a>
               </li>
-              <li className="list-none">
+              <li>
                 <a href="#" className=" hover:text-accent hover:underline">Technology</a>
               </li>
-              <li className="list-none">
+              <li >
                 <a href="#" className=" hover:text-accent hover:underline">Lifestyle</a>
               </li>
-              <li className="list-none">
+              <li >
                 <a href="#" className=" hover:text-accent hover:underline">Health</a>
               </li>
 
-            </div>
-          </div>
+            </ul>
+          
 
         </div>
-
       </div>
-      <div className="mt-5">
+      </div>
+      <div className="mt-5 flex justify-center">
         <p className="text-center text-background-light">
           Copyright © 2023 Your Blog. All rights reserved.
         </p>
       </div>
+    
     </footer>
   )
 }

@@ -134,14 +134,18 @@ export default function LoginComponent() {
   const [lastName, setLastName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [score, setScore] = useState(0)
+  const [strength, setStrength] = useState({ width: 'w-0', color: 'bg-transparent', label: '' })
   const [isLogin, setIsLogin] = useState(true);
   const id = useId();
   function toggleLogin() {
     setIsLogin(!isLogin);
+    setStrength({ width: 'w-0', color: 'bg-transparent', label: '' });
+    setEmail("")
+    setPassword("")
+
   }
 
-  console.log(score)
+
   const checkPasswordStrength = (password) => {
     let score = 0;
 
@@ -150,6 +154,7 @@ export default function LoginComponent() {
     if (/[A-Z]/.test(password)) score++;
     if (/\d/.test(password)) score++;
     if (/[ !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/.test(password)) score++;
+    getStrengthConfig(score);
 
     if (score <= 2) return "weak";
     if (score <= 4) return "medium";
@@ -160,10 +165,36 @@ export default function LoginComponent() {
       setPasswordStatus("");
       return;
     }
-
+    checkPasswordStrength(password)
     setPasswordStatus(checkPasswordStrength(password));
+
   }, [password]);
 
+
+  const getStrengthConfig = (score) => {
+    switch (score) {
+      case 1:
+        setStrength({ width: 'w-1/5', color: 'bg-red-500', label: 'Very Weak' });
+        break;
+      case 2:
+        setStrength({ width: 'w-2/5', color: 'bg-orange-500', label: 'Weak' });
+        break;
+      case 3:
+        setStrength({ width: 'w-3/5', color: 'bg-yellow-500', label: 'Fair' });
+        break;
+      case 4:
+        setStrength({ width: 'w-4/5', color: 'bg-blue-500', label: 'Good' });
+        break;
+      case 5:
+        setStrength({ width: 'w-full', color: 'bg-green-500', label: 'Strong' });
+        break;
+      default:
+        setStrength({ width: 'w-0', color: 'bg-gray-200', label: '' });
+    }
+  };
+
+
+  console.log(strength)
   async function handleLogin(e) {
     e.preventDefault();
     console.log("Email submitted:", email);
@@ -187,7 +218,16 @@ export default function LoginComponent() {
       }, 1000)
 
     } else {
+
       toast.error(data.message)
+
+      if (data.message.toLowerCase() === "user not verified") {
+        setTimeout(() => {
+          navigate('/check-email', {
+            state: { email,source:"login" }
+          })
+        }, 1000)
+      }
     }
   }
 
@@ -218,10 +258,11 @@ export default function LoginComponent() {
     if (data.success) {
 
       navigate('/check-email', {
-        state: { email }
+        state: { email, source:"register" }
       });
     } else {
       toast.error(data.message);
+
     }
   }
   async function handleGoogleLogin() {
@@ -271,10 +312,14 @@ export default function LoginComponent() {
 
 
                     <Input type="password" id={`password-${id}`} placeholder="Your password" className="w-full rounded-xl" onChange={(e) => setPassword(e.target.value)} value={password} required />
-                    {password.length > 1 && (
+                    {password.length > 0 && (
 
 
-                      <div className="mt-2 space-y-1 text-xs">
+                      < div className="mt-2 space-y-1 text-xs">
+                        <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+
+                          <div className={`h-full ${strength.width} ${strength.color} transition-all duration-300 ease-out`} />
+                        </div>
                         <p className={password.length >= 8 ? "text-green-500" : "text-red-400"}>
                           ✓ At least 8 characters
                         </p>
@@ -337,7 +382,7 @@ export default function LoginComponent() {
                 <Separator className="flex-1" />
               </div>
 
-              <Button height={50} width={"100%"} onClick={handleGoogleLogin} className={"hover:bg-accent hover:border-accent rounded-xl"}>
+              <Button height={50} width={"100%"} variant="shiny" onClick={handleGoogleLogin} className={"hover:bg-accent hover:border-accent rounded-xl"}>
                 Sign in with Google
               </Button>
             </div>
@@ -356,6 +401,6 @@ export default function LoginComponent() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </div >
   );
 }

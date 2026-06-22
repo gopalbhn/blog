@@ -23,7 +23,7 @@ export default function NavBar() {
             </div>
             <div className="flex items-center gap-5">
                 {['Home', 'Blog', 'About'].map((item) => (
-                    <Link to={`/${item == "Home" ? "/" : item.toLowerCase()}`} key={item} className="text-sm font-medium text-secondary cursor-pointer hover:text-primary hover:underline transition-colors duration-300">
+                    <Link to={`/${item == "Home" ? "" : item.toLowerCase()}`} key={item} className="text-sm font-medium text-secondary cursor-pointer hover:text-primary hover:underline transition-colors duration-300">
                         {item}
                     </Link>
                 ))}

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { LogOut, verifyMagicLink, registerUser, loginUser, googleLogin, googleCallback } from "../controllers/userController.js"
+import { LogOut, verifyMagicLink, registerUser, loginUser, googleLogin, googleCallback, sendVerificationEmail } from "../controllers/userController.js"
 
 
 const router = Router();
@@ -12,6 +12,6 @@ router.get('/google-login', googleLogin);
 router.get('/google-callback', googleCallback);
 router.get("/verify/:token", verifyMagicLink);
 router.post("/logout", LogOut)
-
+router.post('/verification-email', sendVerificationEmail)
 
 export default router;

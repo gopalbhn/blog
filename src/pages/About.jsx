@@ -5,6 +5,7 @@ import {
     Quote,
 } from "lucide-react";
 import img from "../assets/Blog-post-bro.png"
+import Footer from "@/components/Footer";
 export default function AboutPage() {
     const stats = [
         {
@@ -95,7 +96,7 @@ export default function AboutPage() {
                         {stats.map((stat) => (
                             <div
                                 key={stat.title}
-                                className="rounded-[24px] border-2 border-secondary bg-white p-6 text-center hover:shadow-lg transition"
+                                className="rounded-xl  bg-background-light p-6 text-center shadow-lg"
                             >
                                 <div className="flex justify-center text-primary mb-4">
                                     {stat.icon}
@@ -123,7 +124,7 @@ export default function AboutPage() {
                         {testimonials.map((item, index) => (
                             <div
                                 key={index}
-                                className="border-2 border-secondary rounded-[28px] bg-white p-6 text-center hover:-translate-y-1 transition"
+                                className="rounded-xl bg-background-light p-6 text-center shadow-lg"
                             >
                                 <div className="w-16 h-16 rounded-full bg-background-light border border-secondary mx-auto flex items-center justify-center mb-4">
                                     <Quote size={24} className="text-primary" />
@@ -142,6 +143,7 @@ export default function AboutPage() {
                         ))}
                     </div>
                 </div>
+                <Footer />
             </div>
         </section>
     );

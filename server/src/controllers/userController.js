@@ -228,6 +228,33 @@ const LogOut = async (req, res) => {
   });
 };
 
+const sendVerificationEmail = async (req, res) => {
+  console.log("send verification email hit ", req.body);
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      message: "Email is required",
+    });
+  }
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(400).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+  const token = generateJwt(email);
+  await sendMail(
+    email,
+    "Verification Email",
+    `<h1>Verify Your Email</h1> <a href ="${process.env.FRONTEND_URI}/verify/${token}">Click here to verify your email</a>`
+  );
+  res.status(200).json({
+    success: true,
+    message: "Verification email sent successfully",
+  });
+}
 
 
 
@@ -236,7 +263,7 @@ export {
   loginUser,
   loginWithMagicLink,
   verifyMagicLink,
-
+  sendVerificationEmail,
   LogOut,
   googleLogin,
   googleCallback

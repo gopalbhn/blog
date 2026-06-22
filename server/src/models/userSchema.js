@@ -20,7 +20,7 @@ const userSchema = new Schema({
     role: {
         type: String,
         default: "Reader",
-        enum: ["Reader", "Writer"]
+        enum: ["Reader", "Author", "Admin"]
     },
     phoneNumber: {
         type: String,
