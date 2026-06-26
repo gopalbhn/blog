@@ -2,6 +2,7 @@ import SideBar from "@/components/author/SideBar";
 import Button from "@/components/ui/button";
 import { Menu, Upload } from "lucide-react";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 const CreatePost = () => {
   const [open, setOpen] = useState(true);
@@ -9,10 +10,41 @@ const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Select");
-  console.log(image);
+  const [comments, setComments] = useState(true)
   async function handlePublish() {
-    console.log("Hello world");
+
+    const formData = new FormData()
+
+    formData.append("title", title)
+    formData.append("description", description)
+    formData.append("category", category)
+    formData.append("image", image)
+    formData.append("commentsEnabled", comments)
+    const res = await fetch(
+      `${import.meta.env.VITE_BACKEND_URI}/api/post/create`,
+      {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      }
+    )
+
+    const data = await res.json();
+    if (data.success) {
+      toast.success("Post Created Successfully")
+      setTimeout(() => {
+        window.location.href = "/"
+      }, 500)
+    }
+    else {
+      toast.error(data.message)
+    }
+
+
+
   }
+
+
 
   return (
     <div className="h-full w-full relative">
@@ -92,10 +124,29 @@ const CreatePost = () => {
               value={category}
               className="h-12 w-full bg-background-light outline-none  rounded-xl p-2 shadow-sm focus:shadow-md transition-shadow duration-200"
             >
+              <option value="Select" disabled selected>Select Your Category</option>
               {["Technology", "Science", "Business", "Health", "Travel"].map(item => (
                 <option value={item} key={item} className="px-2 ">{item}</option>
               ))}
             </select>
+          </div>
+          <div className="h-full w-full mt-5 flex items-center gap-2">
+
+            <h3 className="font-bold text-title font-heading">
+              Enable Comments
+            </h3>
+            <div className="h-6 w-12 rounded-full border border-gray-400">
+              <button
+                onClick={() => setComments(!comments)}
+                className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors duration-300 ${comments ? "bg-primary" : "bg-gray-300"
+                  }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-300 ${comments ? "translate-x-6" : "translate-x-1"
+                    }`}
+                />
+              </button>
+            </div>
           </div>
           <div className="h-full w-full mt-10 flex items-center justify-center">
             <Button

@@ -10,7 +10,7 @@ const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_SECRET,
   process.env.REDIRECT_URI
 );
-console.log(process.env.REDIRECT_URI)
+
 const registerUser = async (req, res) => {
   const { name, email, password, phoneNumber } = req.body;
 
@@ -21,7 +21,7 @@ const registerUser = async (req, res) => {
     });
   }
 
-  const userExists = await User.findOne({ email });
+  const userExists = await User.findOne({ email,isDeleted:false });
 
   if (userExists) {
     return res.status(400).json({
@@ -41,8 +41,7 @@ const registerUser = async (req, res) => {
   const token = jwt.sign({ email }, process.env.JWT_SECRET, {
     expiresIn: "1h"
   });
-  console.log("generated token", token);
-  console.log(email)
+
   await sendMail(
     email,
     "Welcome to our blog",
@@ -64,11 +63,11 @@ const loginUser = async (req, res) => {
       message: "Some field are missing",
     });
   }
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email,isDeleted:false });
   if (!user) {
     return res.status(400).json({
       success: false,
-      message: "User not found",
+      message: "User not found Please Register",
     });
   }
   if (!user.isVerified) {
@@ -87,7 +86,6 @@ const loginUser = async (req, res) => {
   const token = generateJwt(user);
   res.cookie("token", token, {
     httpOnly: true,
-
     secure: true,
     maxAge: 24 * 60 * 60 * 1000,
   });
@@ -136,7 +134,7 @@ const googleLogin = (req, res) => {
     scope: scopes,
   })
 
-  console.log(url);
+
   res.redirect(url);
 };
 
@@ -148,16 +146,14 @@ const googleCallback = async (req, res) => {
   oauth2Client.setCredentials(tokens);
   const oauth2 = google.oauth2({ version: 'v2', auth: oauth2Client });
   const userInfo = await oauth2.userinfo.get({ auth: oauth2Client });
-  console.log(userInfo.data);
+
 
   const user = await User.findOne({ email: userInfo.data.email });
   if (user) {
     const token = generateJwt(user);
     res.cookie("token", token, {
-      httpOnly: false,
-      sameSite: "none",
+      httpOnly: true,
       secure: true,
-      path: "/",
       maxAge: 24 * 60 * 60 * 1000,
     });
     res.redirect(`${process.env.FRONTEND_URI}?login=success`)
@@ -172,10 +168,8 @@ const googleCallback = async (req, res) => {
   await newUser.save();
   const token = generateJwt(newUser);
   res.cookie("token", token, {
-    httpOnly: false,
-    sameSite: "none",
+    httpOnly: true,
     secure: true,
-    path: "/",
     maxAge: 24 * 60 * 60 * 1000,
   });
   res.redirect(process.env.FRONTEND_URI)
@@ -217,7 +211,7 @@ const verifyMagicLink = async (req, res) => {
 
 const LogOut = async (req, res) => {
   res.clearCookie("token", {
-    httpOnly: true,
+    httpOnly: false,
     sameSite: "none",
     secure: true,
     path: "/",
@@ -229,7 +223,7 @@ const LogOut = async (req, res) => {
 };
 
 const sendVerificationEmail = async (req, res) => {
-  console.log("send verification email hit ", req.body);
+
   const { email } = req.body;
   if (!email) {
     return res.status(400).json({
@@ -256,6 +250,25 @@ const sendVerificationEmail = async (req, res) => {
   });
 }
 
+const getInfo = async (req, res) => {
+
+  const user = await User.findById({ _id: req.user.id }).select('-password -isDeleted')
+  if (!user) {
+    res.status(400).json({
+      success: false,
+      message: "User Not Found"
+    })
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "User Found",
+    user
+  });
+}
+
+
+
 
 
 export {
@@ -266,5 +279,6 @@ export {
   sendVerificationEmail,
   LogOut,
   googleLogin,
-  googleCallback
+  googleCallback,
+  getInfo,
 };

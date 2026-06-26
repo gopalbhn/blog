@@ -25,6 +25,10 @@ const userSchema = new Schema({
     phoneNumber: {
         type: String,
         required: false
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
 })
 

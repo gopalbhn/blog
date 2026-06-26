@@ -194,10 +194,8 @@ export default function LoginComponent() {
   };
 
 
-  console.log(strength)
   async function handleLogin(e) {
     e.preventDefault();
-    console.log("Email submitted:", email);
     if (password.length < 8) {
       toast.error("Password must be at least 8 characters long")
       return
@@ -207,14 +205,17 @@ export default function LoginComponent() {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ email, password }),
+      credentials: "include"
     });
     const data = await res.json();
     if (data.success) {
       toast.success(data.message)
 
       setTimeout(() => {
-        navigate("/");
+
+        window.location.href = "/"
+
       }, 1000)
 
     } else {
@@ -224,7 +225,7 @@ export default function LoginComponent() {
       if (data.message.toLowerCase() === "user not verified") {
         setTimeout(() => {
           navigate('/check-email', {
-            state: { email,source:"login" }
+            state: { email, source: "login" }
           })
         }, 1000)
       }
@@ -233,7 +234,6 @@ export default function LoginComponent() {
 
   async function handleRegister(e) {
     e.preventDefault();
-    console.log("Email submitted:", email);
 
     if (password.length < 8) {
       toast.error("Password must be at least 8 characters long")
@@ -252,13 +252,11 @@ export default function LoginComponent() {
       },
       body: JSON.stringify({ name: fullName, email, password, phoneNumber })
     });
-    console.log(res)
     const data = await res.json();
-    console.log(data)
     if (data.success) {
 
       navigate('/check-email', {
-        state: { email, source:"register" }
+        state: { email, source: "register" }
       });
     } else {
       toast.error(data.message);

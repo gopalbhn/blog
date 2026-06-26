@@ -1,11 +1,13 @@
+import Comment from "../models/commentSchema.js";
 import Post from "../models/postSchema.js";
+import { uploadToCloudinary } from "../utils/cloudinary.js";
 
 
 
 const getAllPost = async (req, res) => {
-    console.log("Control here")
+
     try {
-        const allPost = await Post.find().populate({
+        const allPost = await Post.find({ isDeleted: false, status: "published" }).select("-isDeleted").populate({
             path: 'author',
             select: 'name -_id'
         })
@@ -43,14 +45,25 @@ const getOnePost = async (req, res) => {
             })
         }
 
-        const post = await Post.findById(id).populate({
+        const post = await Post.findOne({ _id: id, isDeleted: false }).select("-isDeleted").populate({
             path: "author",
             select: "name -_id"
         });
-        if (!post) {
+        if (post === null) {
             return res.status(400).json({
                 success: false,
                 message: "Post not found with the given id ",
+            })
+        }
+        if (post.commentsEnabled && post.comments.length > 0) {
+            await post.populate({
+                path: "comments",
+                match: { isDeleted: false },
+                select: "content  _id author updatedAt",
+                populate: {
+                    path: "author",
+                    select: "name -_id"
+                }
             })
         }
 
@@ -68,13 +81,13 @@ const getOnePost = async (req, res) => {
 
 const getSearchedPost = async (req, res) => {
     try {
-        console.log("this func")
+
         const { keyword } = req.query;
-        console.log("this is my keyword", keyword)
+
 
         const searchedPost = await Post.find({
-            title: { $regex: keyword, $options: "i" }
-        })
+            title: { $regex: keyword, $options: "i" }, isDeleted: false
+        }).select("-isDeleted")
 
         if (searchedPost.length === 0) {
             return res.status(400).json({
@@ -112,7 +125,7 @@ const getPostByCategory = async (req, res) => {
 
         }
 
-        const post = await Post.find({ category })
+        const post = await Post.find({ category, isDeleted: false }).select("-isDeleted")
 
         if (post.length === 0) {
             return res.status(400).json({
@@ -138,7 +151,7 @@ const getMyPost = async (req, res) => {
         const userId = req.user.id;
 
 
-        const post = await Post.find({ author: userId })
+        const post = await Post.find({ author: userId, isDeleted: false }).select("-isDeleted")
 
         if (post.length === 0) {
             return res.status(400).json({
@@ -164,43 +177,60 @@ const createPost = async (req, res) => {
 
     try {
         const id = req.user.id;
-        const { title, description, category, commentsEnabled, author, image } = req.body;
+        const { title, description, category, commentsEnabled } = req.body;
 
-        if (!title || !description || !category || author) {
+
+        if (!title || !description || !category) {
             return res.status(400).json({
                 success: false,
                 message: "Some field are missing"
             })
         }
+        const allowedCategories = [
+            "Technology",
+            "Science",
+            "Health",
+            "Travel",
+            "Business",
+            "Finance"
+        ];
 
-        // const imagePath = req.file?.path;
-        // if (!imagePath) {
-        //     return res.status(400).json({
-        //         success: false,
-        //         message: "Please upload image"
-        //     })
-        // }
-        // const imageLink = await uploadToCloudinary(imagePath)
-
-        // if (!imageLink) {
-        //     return res.status(400).json({
-        //         success: false,
-        //         message: "Please upload image"
-        //     })
-        // }
+        if (!allowedCategories.includes(category)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid category"
+            });
+        }
+        const imagePath = req.file?.path;
+        if (!imagePath) {
+            return res.status(400).json({
+                success: false,
+                message: "Please upload image"
+            })
+        }
+        const imageObj = await uploadToCloudinary(imagePath)
+        const imageLink = imageObj.url;
+        console.log("image", imageLink)
+        if (!imageLink) {
+            return res.status(400).json({
+                success: false,
+                message: "Please upload image"
+            })
+        }
 
         const newPost = new Post({
             title,
             description,
             category,
             commentsEnabled,
-            image,
-            author
+            image: imageLink,
+            author: id
         })
+        console.log(newPost)
 
         await newPost.save();
-
-        res.status(200).json({
+        console.log("new post saved")
+        res.status(201).json({
             success: true,
             message: "Post created successfully",
             post: newPost
@@ -216,11 +246,14 @@ const createPost = async (req, res) => {
 }
 
 const updatePost = async (req, res) => {
+    console.log("control here")
+    console.log(req.body)
     try {
-        console.log("control uin update")
+
         const { id } = req.params;
-        const { title, description, category } = req.body;
         const userId = req.user.id;
+        console.log(userId)
+        const { title, description, category } = req.body;
 
         const post = await Post.findById(id);
         if (!post) {
@@ -230,14 +263,36 @@ const updatePost = async (req, res) => {
             })
         }
 
-        if (post.author !== userId) {
+        if (post.author.toString() !== userId) {
             return res.status(400).json({
                 success: false,
                 message: "You are not authorized to update this post"
             })
         }
 
-        const updatedPost = await Post.findByIdAndUpdate(id, { $set: req.body }, { new: true });
+        let imageUrl = post.image;
+
+        if (req.file) {
+            const imagePath = req.file.path;
+            const imageObj = await uploadToCloudinary(imagePath);
+            imageUrl = imageObj.url;
+        }
+
+
+        const updatedPost = await Post.findByIdAndUpdate(id, {
+            title: req.body.title,
+            description: req.body.description,
+            category: req.body.category,
+            commentsEnabled: req.body.commentsEnabled,
+            status: "pending",
+            image: imageUrl
+        }, { returnDocument: "after" }).select("-isDeleted")
+
+        res.status(200).json({
+            success: true,
+            message: "Post updated successfully",
+            post: updatedPost
+        })
 
     } catch (error) {
         res.status(500).json({
@@ -248,11 +303,12 @@ const updatePost = async (req, res) => {
 }
 
 const deletePost = async (req, res) => {
+    console.log("control")
     try {
         const { id } = req.params;
+        console.log(req.user)
         const userId = req.user.id;
-
-        const post = await Post.findById(id);
+        const post = await Post.findById({ _id: id, isDeleted: false });
         if (!post) {
             return res.status(400).json({
                 success: false,
@@ -260,26 +316,22 @@ const deletePost = async (req, res) => {
             })
         }
 
-        if (post.author !== userId) {
+
+        post.isDeleted = true;
+
+        //check if post is deleted
+        if (!post.isDeleted) {
             return res.status(400).json({
                 success: false,
-                message: "You are not authorized to delete this post"
+                message: "Post is not deleted"
             })
         }
-
-        const deletePost = await Post.findByIdAndDelete(id);
-
-        if (!deletePost) {
-            return res.status(400).json({
-                success: false,
-                message: "Failed to delete post"
-            })
-        }
+        await post.save()
 
         res.status(200).json({
             success: true,
             message: "Post deleted successfully",
-            post: deletePost
+
         })
 
 
@@ -293,11 +345,13 @@ const deletePost = async (req, res) => {
 
 const addComents = async (req, res) => {
     try {
-        const { id } = req.params;
+
+        const postId = req.params.id
+
         const { comment } = req.body;
         const userId = req.user.id;
 
-        const post = await Post.findById(id);
+        const post = await Post.findById({ _id: postId });
         if (!post) {
             return res.status(400).json({
                 success: false,
@@ -313,12 +367,24 @@ const addComents = async (req, res) => {
         }
 
         const newComment = new Comment({
-            postId: id,
-            userId,
-            comment
+            post: postId,
+            author: userId,
+
+
+
+
+
+
+
+
+
+
+            content: comment
         })
 
         await newComment.save();
+        post.comments.push(newComment);
+        await post.save();
 
         res.status(200).json({
             success: true,
@@ -358,10 +424,81 @@ const addComent = async (req, res) => {
     res.status(201).json({ comment });
 };
 
+const getAllComments = async (req, res) => {
+    try {
+        const authorId = req.user.id;
+
+        const posts = await Post.find({
+            author: authorId,
+            isDeleted: false
+        }).populate({
+            path: "comments",
+            match: { isDeleted: false },
+            select: " -isDeleted",
+            populate: [
+                {
+                    path: "author",
+                    match: { isDeleted: false },
+                    select: "name -_id ",
+                },
+                {
+                    path: "post",
+                    select: "title -_id",
+                }
+            ],
+
+        })
+
+
+        const allComments = posts.flatMap(post => post.comments || []);
+
+        return res.status(200).json({
+            success: true,
+            comments: allComments
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+
+
+const AllFeaturedPost = async (req, res) => {
+    const featuredPost = await Post.find({
+        isFeatured: true
+    }).select('-isDeleted -comments').limit(4)
+    res.status(200).json({
+        success: true,
+        message: "Featured posts fetched successfully",
+        featuredPost
+    })
+}
 
 
 
 
+const deleteComment = async (req, res) => {
+    const { id } = req.params;
+    console.log("Comment id", id)
+    const comment = await Comment.findById(id);
+    if (!comment) {
+        return res.status(404).json({
+            success: false,
+            message: "Comment not found"
+        })
+    }
+
+    comment.isDeleted = true;
+    await comment.save();
+    res.status(200).json({
+        success: true,
+        message: "Comment deleted successfully"
+    })
+}
 
 export {
     getAllPost,
@@ -372,5 +509,8 @@ export {
     createPost,
     updatePost,
     deletePost,
-    addComents
+    addComents,
+    deleteComment,
+    AllFeaturedPost,
+    getAllComments
 }

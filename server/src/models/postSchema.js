@@ -24,6 +24,19 @@ const postSchema = new Schema({
         ref: "User",
         required: true,
     },
+    isDeleted: {
+        type: Boolean,
+        default: false,
+    },
+    status: {
+        type: String,
+        enum: ["pending", "published"],
+        default: "pending",
+    },
+    isFeatured: {
+        type: Boolean,
+        default: false
+    },
     commentsEnabled: {
         type: Boolean,
         default: true,

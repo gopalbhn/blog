@@ -10,6 +10,7 @@ import { faq, features } from "../lib/data.js"
 import { blogs } from "@/lib/data";
 import BlogCard from "@/components/BlogCard";
 import { toast } from "react-toastify";
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const [show, setShow] = useState(null)
@@ -25,13 +26,13 @@ const Dashboard = () => {
 
     }
 
-    getPost();
+    getFeaturedPost();
 
   }, [])
 
-  const getPost = async () => {
+  const getFeaturedPost = async () => {
     const res = await fetch(
-      `${import.meta.env.VITE_BACKEND_URI}/api/post`,
+      `${import.meta.env.VITE_BACKEND_URI}/api/post/featured`,
       {
         method: "GET",
         headers: {
@@ -42,9 +43,9 @@ const Dashboard = () => {
     )
 
     const data = await res.json();
-    console.log(data)
+    console.log("this is featured data", data.featuredPost)
     if (data.success) {
-      setPost(data.post)
+      setPost(data.featuredPost)
 
       console.log(post)
     } else {
@@ -52,7 +53,7 @@ const Dashboard = () => {
     }
 
   }
-
+  console.log(post)
   return (
     <div className="h-full  px-10 ">
       <section className="h-full w-full grid grid-cols-2 gap-10 items-start mt-10 ">
@@ -156,7 +157,7 @@ const Dashboard = () => {
                 }
               }
             }
-            console.log(feature.icon)
+
             return (
 
               <FeatureCard
@@ -171,10 +172,11 @@ const Dashboard = () => {
           )}
         </motion.div>
       </section>
+
       <section className="h-full w-full mt-24 mb-2">
-        <h1 className="text-header font-heading font-bold  ">Recent <span className="text-primary">Blogs</span></h1>
+        <h1 className="text-header font-heading font-bold  ">Featured <span className="text-primary">Blogs</span></h1>
         <div className="w-full grid grid-cols-4 gap-5 mt-5">
-          {post.slice(0, 4).map((blog, index) => (
+          {post.map((blog, index) => (
             <BlogCard
               key={index}
               image={blog.image}

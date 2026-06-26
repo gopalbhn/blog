@@ -22,14 +22,14 @@
   --color-error: #ef4444;
 
   --font-sans: "Inter", sans-serif;
-  --font-heading:"Georgia",sans-serif;
+  --font-heading: "Georgia", sans-serif;
 
 
- --text-hero: 48px;
---text-header: 36px;
---text-title: 22px;
---text-body: 16px;
---text-small: 14px;
+  --text-hero: 48px;
+  --text-header: 36px;
+  --text-title: 22px;
+  --text-body: 16px;
+  --text-small: 14px;
 
 }
 
@@ -78,4 +78,13 @@
   to {
     --r: 360deg;
   }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

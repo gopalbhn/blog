@@ -29,14 +29,14 @@ const EditPost = () => {
         },
       );
       const data = await res.json();
-      console.log(data);
+      const post = data.post;
 
       if (data.success) {
-        setBlog(data.post);
-        setTitle(data.post.title || "");
-        setDescription(data.post.description || "");
-        setCategory(data.post.category || "");
-        setBlogImage(data.post.image);
+        setBlog(post);
+        setTitle(post.title || "");
+        setDescription(post.description || "");
+        setCategory(post.category || "");
+        setBlogImage(post.image);
       }
     };
     fetchPost();
@@ -44,11 +44,9 @@ const EditPost = () => {
 
   function imagePreview() {
     if (image) {
-      console.log(image);
       return URL.createObjectURL(image);
     }
     if (blogImage) {
-      console.log(blogImage);
       return blogImage;
     }
 
@@ -56,25 +54,24 @@ const EditPost = () => {
   }
 
   async function handlePublish() {
-    console.log("post id",id)
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("category", category);
+    if (image) {
+      formData.append("image", image)
+    } else {
+      formData.append('image', blogImage)
+    }
     const res = await fetch(
       `${import.meta.env.VITE_BACKEND_URI}/api/post/update/${id}`,
       {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        body: formData,
         credentials: "include",
-        body: JSON.stringify({
-          title,
-          description,
-          category,
-          image,
-        }),
       },
     );
     const data = await res.json();
-    console.log(data);
     if (data.success) {
       toast.success("Post Updated Successfully");
       setTimeout(() => {
@@ -161,7 +158,7 @@ const EditPost = () => {
               className="h-12 w-full bg-background-light outline-none  rounded-xl p-2 shadow-sm focus:shadow-md transition-shadow duration-200"
             >
               {["Technology", "Science", "Business", "Health", "Travel"].map(item => (
-                <option value={item}>{item}</option>
+                <option key={item} value={item}>{item}</option>
               ))}
             </select>
           </div>

@@ -18,39 +18,111 @@ import EditPost from './pages/author/EditPost'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AllPost from './pages/admin/AllPost'
 import AllUser from './pages/admin/AllUsers'
+import { useEffect } from 'react'
+import { postStore } from './store/postStore'
+import useUserStore from './store/userStore'
 
 
 
 function App() {
+
+  return <Init />
+}
+
+const Init = () => {
   const location = useLocation()
-  const authorPath = location.pathname.startsWith("/author")
-  const adminPath = location.pathname.startsWith('/admin')
+  const setUser = useUserStore(state => state.setUser)
+  const setPost = postStore(state => state.setPost)
+  const user = useUserStore(state => state.user);
+  const userRole = user?.role;
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/user/me`,
+          {
+            method: "GET",
+            credentials: 'include'
+          }
+        )
+        const data = await res.json()
+        if (data.user) {
+
+          setUser(data.user)
+        } else {
+          setUser(null)
+        }
+
+      } catch (err) {
+        setUser(null)
+      }
+    }
+
+    fetchUser();
+  }, [])
+
+  useEffect(() => {
+    async function getAllPost() {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/post`)
+        const data = await res.json()
+        if (data.success) {
+          setPost(data.post)
+        } else {
+          setPost([])
+        }
+
+      } catch (err) {
+        setPost([])
+
+      }
+    }
+    getAllPost();
+  }, [])
+
+
+
   return (
     <>
-      {!authorPath  && !adminPath  && <NavBar />}
+      {
+        userRole !== "Author" && userRole !== "Admin" && <NavBar />
+      }
       <Routes>
 
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={
+          userRole == "Author" ? <AuthorDashboard /> :
+            userRole == "Admin" ? <AdminDashboard /> :
+              <Dashboard />
+        } />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/check-email" element={<CheckEmail />} />
         <Route path="/verify/:token" element={<VerifyEmail />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:id" element={<BlogReading />} />
-        <Route path='/author' element={<AuthorDashboard />} />
-        <Route path='/author/post' element={<Post />} />
-        <Route path='/author/comments' element={<Comment />} />
-        <Route path="/author/create-post" element={<CreatePost />} />
-        <Route path="/author/edit-post/:id" element={<EditPost />} />
+        {userRole == "Author" && (
+          <>
+            <Route path='/author/post' element={<Post />} />
+            <Route path='/author/comments' element={<Comment />} />
+            <Route path="/author/create-post" element={<CreatePost />} />
+            <Route path="/author/edit-post/:id" element={<EditPost />} />
+          </>
+        )}
 
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/post" element={<AllPost />} />
-        <Route path="/admin/users" element={<AllUser />} />
-
+        {userRole == "Admin" && (
+          <>
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/post" element={<AllPost />} />
+            <Route path="/admin/users" element={<AllUser />} />
+          </>
+        )}
       </Routes>
+
       <ToastContainer />
     </>
   )
+
 }
+
+
 
 export default App

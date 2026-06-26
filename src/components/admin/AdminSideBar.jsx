@@ -9,6 +9,7 @@
 
 // export default SideBar
 
+import useUserStore from "@/store/userStore";
 import {
 
     LogOut,
@@ -22,6 +23,7 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate, } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AdminSideBar = ({ open }) => {
 
@@ -36,9 +38,28 @@ const AdminSideBar = ({ open }) => {
         { icon: User, label: "Users", id: "user", link: "/admin/users" },
 
     ];
-
+    const handleLogout = async () => {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/user/logout`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+        });
+        const data = await res.json();
+        if (data.success) {
+            toast.success("Logout Successfully")
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 1000)
+        } else {
+            toast.error(data.message)
+        }
+    }
     const navigate = useNavigate();
     const location = useLocation();
+    const user = useUserStore((state) => state.user);
+    const name = user?.name;
     return (
         <div className={`w-64 h-screen bg-background-light border-r border-gray-400 flex flex-col fixed left-0 top-0 z-20 shadow-sm transition-all duration-300 ${open ? 'translate-x-0' : '-translate-x-full'} `}>
             <div className="h-16 px-6 flex items-center border-b border-gray-100 flex-shrink-0">
@@ -57,7 +78,7 @@ const AdminSideBar = ({ open }) => {
 
                     <div className="min-w-0">
                         <p className="text-sm font-semibold text-gray-900 truncate">
-                            Mehical Admin
+                            {name}
                         </p>
                         <p className="text-xs text-gray-400">Admin</p>
                     </div>
@@ -82,7 +103,7 @@ const AdminSideBar = ({ open }) => {
 
             <div className="absolute bottom-0 w-full px-3 pb-4 pt-2 border-t border-gray-100 flex-shrink-0">
                 <button
-                    onClick={() => console.log("click")}
+                    onClick={() => handleLogout()}
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:bg-[#FAF4F2] hover:text-primary transition-colors"
                 >
                     <LogOut className="w-4 h-4" />
