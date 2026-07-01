@@ -1,10 +1,11 @@
 import AdminSideBar from "@/components/admin/AdminSideBar";
+import WriteSuggestion from "@/components/admin/WriteSuggestion";
 import MetricCard from "@/components/MetricCard";
 import UnifiedTable from "@/components/table";
 import Button from "@/components/ui/button";
 import { Ellipse, EllipsisVerticalIcon, Eye, FileText, Menu, MoreVertical, MoveVertical, Pen, Plus, Trash, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const AdminDashboard = () => {
@@ -105,7 +106,7 @@ const AdminDashboard = () => {
           </div>
 
         </div>
-
+  
         <div className="h-full w-full grid grid-cols-3 mt-10 gap-5">
           <MetricCard icon={User} title={"Total User"} number={stats?.totalUsers}  />
           <MetricCard
@@ -116,7 +117,7 @@ const AdminDashboard = () => {
           />
             <MetricCard icon={FileText} title={"Total Posts"} number={stats?.totalPosts}  />
 
-
+     
         </div>
         <div className="h-full w-full mt-10">
           <h1 className="text-title font-bold">Recent Users</h1>

@@ -31,6 +31,7 @@ import {
 import DeleteConfirmModal from "./DeleteConfirm";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import WriteSuggestion from "./admin/WriteSuggestion";
 
 export default function UnifiedTable({
   type,
@@ -41,6 +42,7 @@ export default function UnifiedTable({
   const [openPopoverId, setOpenPopoverId] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null)
+  const [reviewOpen, setReviewOpen] = useState(false)
   const navigate = useNavigate();
 
   const handleAction = (action, item) => {
@@ -190,52 +192,53 @@ export default function UnifiedTable({
     }
   }
   return (
-    <div className="w-full mt-2 overflow-hidden rounded-xl border border-gray-200 bg-background-light shadow-sm">
+    <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-background-light shadow-sm">
       <DeleteConfirmModal
         isOpen={showConfirm}
         onClose={() => setShowConfirm(false)}
         onDelete={() => handleDelete()}
         itemName={deleteTarget ? deleteTarget.name : ""}
       />
+      <WriteSuggestion open={reviewOpen} close={() => setReviewOpen(false)} />
       <Table>
         <TableHeader className="border-b border-gray-300">
           {type === "user" ? (
             <TableRow>
-              <TableHead className="text-left text-small font-semibold text-gray-900">
+              <TableHead className="text-left text-small font-semibold text-gray-900 uppercase">
                 Name
               </TableHead>
 
-              <TableHead className="text-center text-small font-semibold text-gray-900">
+              <TableHead className="text-center text-small font-semibold text-gray-900 uppercase">
                 Email
               </TableHead>
 
-              <TableHead className="text-center text-small font-semibold text-gray-900">
+              <TableHead className="text-center text-small font-semibold text-gray-900 uppercase">
                 Role
               </TableHead>
 
-              <TableHead className="text-center text-small font-semibold text-gray-900">
+              <TableHead className="text-center text-small font-semibold text-gray-900 uppercase">
                 Action
               </TableHead>
             </TableRow>
           ) : (
             <TableRow>
-              <TableHead className="text-left text-small font-semibold text-gray-900">
+              <TableHead className="text-left text-small font-semibold text-gray-900 uppercase">
                 Title
               </TableHead>
 
-              <TableHead className="text-center text-small font-semibold text-gray-900">
+              <TableHead className="text-center text-small font-semibold text-gray-900 uppercase">
                 Category
               </TableHead>
 
-              <TableHead className="text-center text-small font-semibold text-gray-900">
+              <TableHead className="text-center text-small font-semibold text-gray-900 uppercase">
                 Status
               </TableHead>
 
-              <TableHead className="text-center text-small font-semibold text-gray-900">
+              <TableHead className="text-center text-small font-semibold text-gray-900 uppercase">
                 Date
               </TableHead>
 
-              <TableHead className="text-center text-small font-semibold text-gray-900">
+              <TableHead className="text-center text-small font-semibold text-gray-900 uppercase">
                 Action
               </TableHead>
             </TableRow>
@@ -341,7 +344,7 @@ export default function UnifiedTable({
                 key={post._id}
                 className="border-b border-gray-200 last:border-0"
               >
-                <TableCell className="text-left text-small text-gray-900">
+                <TableCell className="text-left text-small text-gray-900 ">
                   {post.title}
                 </TableCell>
 
@@ -350,7 +353,17 @@ export default function UnifiedTable({
                 </TableCell>
 
                 <TableCell className="text-center text-small text-gray-900">
-                  <Badge variant={"outline"} className="text-center">{post.status}</Badge>
+                  {post.status === "pending" ? (
+                    <Badge variant={"pending"} className="text-center capitalize">
+                      <span className="h-2 w-2 rounded-full bg-yellow-500/50 animate-pulse duration-150" />
+                      {post.status}</Badge>
+
+                  ) : (
+                    <Badge variant={"published"} className="text-center capitalize">
+                      <span className="h-2 w-2 rounded-full bg-green-500/50 animate-pulse duration-150" />
+                      {post.status}</Badge>
+
+                  )}
                 </TableCell>
 
                 <TableCell className="text-center text-small text-gray-900">
@@ -392,13 +405,10 @@ export default function UnifiedTable({
                               Publish
                             </button>
                           )}
-
+                          {console.log("Review open", reviewOpen)}
                           <button
                             onClick={() =>
-                              handleAction(
-                                "give-suggestion",
-                                post
-                              )
+                              setReviewOpen(!reviewOpen)
                             }
                             className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm text-gray-700 transition hover:bg-gray-50"
                           >
@@ -463,7 +473,7 @@ export default function UnifiedTable({
                         onClick={() => {
                           navigate(`/author/edit-post/${post._id}`)
                         }}
-                        className="rounded-lg hover:bg-gray-100"
+                        className="rounded-full hover:bg-primary/10 hover:text-primary"
                       >
                         <Pen className="h-4 w-4" />
                       </Button>
@@ -476,7 +486,7 @@ export default function UnifiedTable({
                           setShowConfirm(true)
                           setOpenPopoverId(null)
                         }}
-                        className="rounded-lg hover:bg-red-100"
+                        className="rounded-full hover:bg-red-100"
                       >
                         <Trash className="h-4 w-4 text-red-500" />
                       </Button>

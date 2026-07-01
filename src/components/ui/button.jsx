@@ -24,13 +24,13 @@ const buttonVariants = cva(
                     "bg-secondary text-secondary-foreground shadow-sm shadow-black/5 hover:bg-secondary/80",
                 ghost: "hover:bg-accent hover:text-accent-foreground",
                 link: "text-primary underline-offset-4 hover:underline",
-                
+
                 // Existing custom variants
                 shiny: `
-          group relative overflow-hidden rounded-full border border-primary
-          bg-background-light font-medium uppercase tracking-wide text-primary
+          group relative overflow-hidden rounded-full border border-secondary
+          bg-secondary-light font-medium uppercase tracking-wide text-primary
           transition-all duration-300
-          hover:bg-primary hover:text-white
+          hover:bg-secondary hover:text-white
           hover:shadow-[0_8px_25px_rgba(161,86,73,0.25)]
           hover:-translate-y-0.5
         `,
@@ -49,7 +49,7 @@ const buttonVariants = cva(
           after:ease-linear
           flex items-center justify-center
         `,
-     disabled: `
+                disabled: `
   relative rounded-xl
   flex items-center justify-center
 

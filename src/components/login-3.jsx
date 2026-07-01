@@ -13,6 +13,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/ui/button"
 import { useId } from "react"
+import { FlowButton } from "./ui/flow-button";
 function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
@@ -355,19 +356,19 @@ export default function LoginComponent() {
                 {
                   isLogin ? (
 
-                    <Button onClick={handleLogin} variant="gradient" width={"100%"} height={50}>
+                    <FlowButton onClick={handleLogin} variant="default"  className="h-full w-full" text={"Login"}>
                       Login
-                    </Button>
+                    </FlowButton>
                   ) : (
 
                     passwordStatus == "strong" ? (
-                      <Button onClick={handleRegister} variant="gradient" width={"100%"} height={50}>
+                      <FlowButton onClick={handleRegister} variant="default" className={"h-full w-full"} text={"Register"}>
                         Register
-                      </Button>
+                      </FlowButton>
                     ) : (
-                      <Button disabled onClick={handleRegister} variant="gradient" width={"100%"} height={50}>
+                       <FlowButton onClick={handleRegister} variant="default" className={"h-full w-full"} text={"Register"} disabled>
                         Register
-                      </Button>
+                      </FlowButton>
                     )
                   )
                 }

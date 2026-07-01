@@ -3,19 +3,23 @@
 
 
 @theme {
-  --color-primary: #A15649;
-  --color-secondary: #2C3437;
-  --color-accent: #D4AF37;
+  --color-primary: #3D5A80;
+  --color-primary-hover: #314866;
+  --color-primary-light: #EEF3F9;
 
-  --color-primary-hover: #854338;
-  --color-secondary-hover: #4A5458;
-  --color-accent-hover: #B3922E;
+  --color-secondary: #293241;
+  --color-secondary-hover: #1F2835;
+  --color-secondary-light: #F3F5F7;
 
-  --color-background-light: #E7E5E4;
+  --color-accent: #EE6C4D;
+  --color-accent-hover: #D85A3C;
+  --color-accent-light: #FFF1EC;
+
+  --color-background: #FCFCFD;
+  --color-surface: #fff;
+  --color-background-light: #fff;
 
 
-  --color-background: #fff;
-  --color-surface: #f8fafc;
 
   --color-success: #22c55e;
   --color-warning: #eab308;
@@ -23,14 +27,14 @@
 
   --font-sans: "Inter", sans-serif;
   --font-heading: "Georgia", sans-serif;
-
+  /* --font-heading: "DM Serif Display", serif; */
 
   --text-hero: 48px;
   --text-header: 36px;
   --text-title: 22px;
   --text-body: 16px;
   --text-small: 14px;
-
+  --text-muted: #6B7280;
 }
 
 
@@ -53,7 +57,7 @@
 .rotatingGradient {
   background: conic-gradient(from var(--r) at center,
       var(--color-primary) 0%,
-      #ec7c7c 10%,
+      #99c5ff 10%,
       var(--color-primary) 20%);
 
   animation: rotating 3s linear infinite;

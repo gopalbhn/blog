@@ -1,4 +1,4 @@
-import { generateJwt, authenticateJWT } from "../middlewares/auth.js";
+import { generateJwt, authenticateJWT, generateAccessToken, generateRefreshToken } from "../middlewares/auth.js";
 import User from "../models/userSchema.js";
 import { sendMail } from "../utils/nodemailer.js";
 import bcrypt from "bcrypt";
@@ -21,7 +21,7 @@ const registerUser = async (req, res) => {
     });
   }
 
-  const userExists = await User.findOne({ email,isDeleted:false });
+  const userExists = await User.findOne({ email, isDeleted: false });
 
   if (userExists) {
     return res.status(400).json({
@@ -63,7 +63,7 @@ const loginUser = async (req, res) => {
       message: "Some field are missing",
     });
   }
-  const user = await User.findOne({ email,isDeleted:false });
+  const user = await User.findOne({ email, isDeleted: false });
   if (!user) {
     return res.status(400).json({
       success: false,
@@ -83,11 +83,21 @@ const loginUser = async (req, res) => {
       message: "Invalid password",
     });
   }
-  const token = generateJwt(user);
-  res.cookie("token", token, {
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+  user.refreshToken = refreshToken;
+  await user.save();
+
+
+  res.cookie("accessToken", accessToken, {
     httpOnly: true,
     secure: true,
-    maxAge: 24 * 60 * 60 * 1000,
+    maxAge: 15 * 60 * 1000
+  });
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000
   });
   user.password = undefined;
   res.status(200).json({
@@ -150,11 +160,21 @@ const googleCallback = async (req, res) => {
 
   const user = await User.findOne({ email: userInfo.data.email });
   if (user) {
-    const token = generateJwt(user);
-    res.cookie("token", token, {
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+    user.refreshToken = refreshToken;
+    await user.save();
+
+
+    res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true,
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 15 * 60 * 1000
+    });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000
     });
     res.redirect(`${process.env.FRONTEND_URI}?login=success`)
     return;
@@ -210,7 +230,23 @@ const verifyMagicLink = async (req, res) => {
 }
 
 const LogOut = async (req, res) => {
-  res.clearCookie("token", {
+  console.log(req.user.id);
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+  user.refreshToken = "";
+  await user.save();
+  res.clearCookie("accessToken", {
+    httpOnly: false,
+    sameSite: "none",
+    secure: true,
+    path: "/",
+  });
+  res.clearCookie("refreshToken", {
     httpOnly: false,
     sameSite: "none",
     secure: true,
@@ -251,20 +287,27 @@ const sendVerificationEmail = async (req, res) => {
 }
 
 const getInfo = async (req, res) => {
+  try {
 
-  const user = await User.findById({ _id: req.user.id }).select('-password -isDeleted')
-  if (!user) {
-    res.status(400).json({
+    const user = await User.findById({ _id: req.user.id }).select('-password -isDeleted')
+    if (!user) {
+      res.status(400).json({
+        success: false,
+        message: "User Not Found"
+      })
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User Found",
+      user
+    });
+  } catch (error) {
+    res.status(200).json({
       success: false,
-      message: "User Not Found"
+      message: error.message
     })
   }
-
-  res.status(200).json({
-    success: true,
-    message: "User Found",
-    user
-  });
 }
 
 

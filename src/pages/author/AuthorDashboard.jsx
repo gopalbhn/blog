@@ -3,7 +3,7 @@ import BlogCard from "@/components/BlogCard";
 import MetricCard from "@/components/MetricCard";
 import Button from "@/components/ui/button";
 import useUserStore from "@/store/userStore";
-import { Clock, File, FileText, Menu, Plus } from "lucide-react";
+import { Clock, File, Files, FileText, Menu, Plus, CircleCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -67,9 +67,9 @@ const AuthorDashboard = () => {
         </div>
 
         <div className="h-full w-full grid grid-cols-3 mt-10 gap-5">
-          <MetricCard icon={FileText} title={"Total Post"} number={totalPost} />
-          <MetricCard icon={Clock} title={"Pending Post"} number={pendingPost} className='bg-yellow-500/50' />
-          <MetricCard icon={FileText} title={"Published Post"} number={publishedPost} className='bg-green-500/50' />
+          <MetricCard icon={Files} title={"Total Post"} number={totalPost} />
+          <MetricCard icon={Clock} title={"Pending Post"} number={pendingPost} className='bg-[#f9d39b]' />
+          <MetricCard icon={CircleCheck} title={"Published Post"} number={publishedPost} className='bg-green-500/50' />
         </div>
 
         <div

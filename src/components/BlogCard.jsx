@@ -1,6 +1,6 @@
-import { Clock } from "lucide-react";
+import { ArrowRight, Clock } from "lucide-react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const BlogCard = ({
   image,
@@ -19,6 +19,7 @@ const BlogCard = ({
       className="
     w-70
     h-full
+    mx-auto
     overflow-hidden
     rounded-xl
     border
@@ -28,20 +29,23 @@ const BlogCard = ({
     hover:shadow-lg
     flex flex-col
     relative
+    group
   "
-      onClick={() => {
-        navigate(`/blog/${id}`)
-      }}
+
     >
-      <img
-        src={image}
-        alt={title}
-        className="h-34 w-full object-cover shrink-0"
-      />
+      <div className="h-34 w-full  relative  ">
+
+        <img
+          src={image}
+          alt={title}
+          className="h-full w-full object-cover shrink-0 group-hover:scale-105 transition-all duration-300 ease-in-out "
+        />
+        <div className="absolute inset-0 group-hover:bg-black/10  " />
+      </div>
 
       <div className="flex flex-col flex-1 p-3">
         <span
-          className=" absolute top-5 left-3 inline-block w-fit rounded-xl bg-[#DBA59A] px-2 py-1 text-[8px] font-semibold uppercase tracking-wide text-white absolute"
+          className=" absolute top-5 left-3 inline-block w-fit rounded-xl bg-accent-light text-accent px-2 py-1 text-[8px] font-semibold uppercase tracking-wide "
         >
           {category}
         </span>
@@ -50,11 +54,11 @@ const BlogCard = ({
           {title}
         </h3>
 
-        <p className="mt-1 text-xs text-stone-600 line-clamp-2 flex-1">
+        <p className="mt-1 text-xs  line-clamp-2 flex-1">
           {excerpt}
         </p>
 
-        <div className="mt-2 flex items-center gap-2 mb-3">
+        <div className="mt-2 flex items-center justify-between mb-3">
 
 
           <div className="min-w-0 " >
@@ -67,6 +71,10 @@ const BlogCard = ({
               <span>{new Date(publishedAt).toDateString()}</span>
             </div>
           </div>
+          <Link to={`/blog/${id}`} className="text-xs text-accent flex items-center gap-1 group hover:animate-pulse">
+            Read more
+            <ArrowRight size={16} className="text-xs  transform transition-all  group-hover:translate-x-2 duration-1000 " />
+          </Link>
         </div>
       </div>
     </motion.div>

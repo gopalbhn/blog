@@ -1,7 +1,7 @@
 
 import './App.css'
 import NavBar from './components/navbar'
-import { Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashbaord'
 import CheckEmail from './pages/CheckEmail'
@@ -21,6 +21,7 @@ import AllUser from './pages/admin/AllUsers'
 import { useEffect } from 'react'
 import { postStore } from './store/postStore'
 import useUserStore from './store/userStore'
+import Profile from './pages/Profile'
 
 
 
@@ -35,6 +36,7 @@ const Init = () => {
   const setPost = postStore(state => state.setPost)
   const user = useUserStore(state => state.user);
   const userRole = user?.role;
+  const userEmail = user?.email
   useEffect(() => {
     async function fetchUser() {
       try {
@@ -45,6 +47,8 @@ const Init = () => {
           }
         )
         const data = await res.json()
+
+
         if (data.user) {
 
           setUser(data.user)
@@ -99,6 +103,8 @@ const Init = () => {
         <Route path="/verify/:token" element={<VerifyEmail />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:id" element={<BlogReading />} />
+        <Route path="/profile" element={<Profile />} />
+
         {userRole == "Author" && (
           <>
             <Route path='/author/post' element={<Post />} />

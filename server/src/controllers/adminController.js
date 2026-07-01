@@ -1,4 +1,5 @@
 import Post from "../models/postSchema.js";
+import Review from "../models/reviewSchems.js";
 import User from "../models/userSchema.js";
 
 
@@ -335,6 +336,34 @@ const getAllAdminPost = async (req, res) => {
 
 }
 
+const giveReview = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const { review } = req.body;
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found"
+      })
+    }
+    const newReview = await Review.create({
+      post: postId,
+      review
+    })
+    res.status(200).json({
+      success: true,
+      message: "Review added successfully"
+    })
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
+
 const getAllDashboardStats = async (req, res) => {
   try {
     const [
@@ -385,5 +414,6 @@ export {
   unfeaturePost,
   getAllComments,
   getAllAdminPost,
-  getAllDashboardStats
+  getAllDashboardStats,
+  giveReview
 }

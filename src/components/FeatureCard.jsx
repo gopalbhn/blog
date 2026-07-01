@@ -7,23 +7,21 @@ const FeatureCard = ({ icon, title, description, cardVariants }) => {
     <motion.div
       key={title}
       whileHover={{ y: -10, scale: 1.05 }}
-      className=" absolute  border bg-background-light border-stone-300 rounded-xl h-70 w-70  shadow-sm hover:shadow-lg px-3 "
+      className=" lg:absolute  hover:border bg-surface border-stone-300 rounded-xl h-70 w-65  shadow-sm hover:shadow-lg px-3  mx-auto lg:mx-0 "
       variants={cardVariants}
     >
-     
 
-      {/* Icon */}
-      <div className="mb-6 mt-3 flex h-20 w-20 mx-auto items-center justify-center rounded-full bg-[#DBA59A] text-accent">
-        <Icon color="#fff" />
+
+
+      <div className="mb-2 mt-3 flex h-15 w-15  items-center justify-center rounded-full bg-accent-light text-accent">
+        <Icon />
       </div>
 
-      {/* Title */}
-      <h3 className="mb-4 text-title font-bold text-primary text-center">
+      <h3 className="mb-4 text-title font-bold text-secondary  ">
         {title}
       </h3>
 
-      {/* Description */}
-      <p className="text-center text-small  leading-relaxed ">
+      <p className=" text-small leading-relaxed ">
         {description}
       </p>
     </motion.div>

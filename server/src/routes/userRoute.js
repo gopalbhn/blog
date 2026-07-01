@@ -12,7 +12,7 @@ router.post("/login", loginUser);
 router.get('/google-login', googleLogin);
 router.get('/google-callback', googleCallback);
 router.get("/verify/:token", verifyMagicLink);
-router.post("/logout", LogOut)
+router.post("/logout", authenticateJWT, LogOut)
 router.post('/verification-email', sendVerificationEmail)
 router.get("/me", authenticateJWT, getInfo)
 

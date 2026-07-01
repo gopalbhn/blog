@@ -3,7 +3,7 @@ import {
   UsersRound,
   ShieldPlus,
   FileText,
-  User,
+  ChartNoAxesColumn,
 } from "lucide-react";
 export const features = [
   {
@@ -25,7 +25,7 @@ export const features = [
       "Create, edit, and format content with support for rich styling and media.",
   },
   {
-    icon: User,
+    icon: ChartNoAxesColumn,
     title: "Admin Dashboard",
     description:
       "Monitor, manage, and configure users and content from one central panel.",

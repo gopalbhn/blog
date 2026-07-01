@@ -26,11 +26,17 @@ const userSchema = new Schema({
         type: String,
         required: false
     },
+    refreshToken: {
+        type: String,
+        required: false,
+
+    },
     isDeleted: {
         type: Boolean,
         default: false
     }
 })
+
 
 
 userSchema.pre("save", async function () {

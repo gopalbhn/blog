@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "../assets/hero.png";
-import { ChevronDown, ChevronRight, } from "lucide-react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { ArrowRight, ChevronDown, ChevronRight, } from "lucide-react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import FeatureCard from "@/components/FeatureCard";
 import { motion } from "framer-motion";
 import Footer from "@/components/Footer";
@@ -10,6 +10,8 @@ import { faq, features } from "../lib/data.js"
 import { blogs } from "@/lib/data";
 import BlogCard from "@/components/BlogCard";
 import { toast } from "react-toastify";
+
+import { FlowButton } from "@/components/ui/flow-button";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -55,14 +57,14 @@ const Dashboard = () => {
   }
   console.log(post)
   return (
-    <div className="h-full  px-10 ">
-      <section className="h-full w-full grid grid-cols-2 gap-10 items-start mt-10 ">
+    <div className="min-h-screen  px-4 sm:px-6 md:px-8 lg:px-10 overflow-x-hidden ">
+      <section className="h-full w-full grid grid-cols-1 lg:grid-cols-2 gap-10 items-start mt-10  bg-[radial-gradeint(circle at top left,#DBEAFE,transparent 40%),#f0f)] ">
         <div>
-          <p className="text-md font-semibold text-primary mb-2 flex items-center gap-2 ">
-            <span className="h-2 w-2 rounded-full bg-primary animate-pulse"></span> Trusted by 5,000+ Bloggers Worldwide
+          <p className="text-md font-semibold text-accent mb-2 flex items-center gap-2 ">
+            <span className="h-2 w-2 rounded-full bg-accent animate-pulse"></span> Trusted by 5,000+ Bloggers Worldwide
           </p>
-          <h1 className="text-hero font-extrabold font-heading tracking-tight uppercase text-primary mb-2 ">
-            Manage, Publish & Grow Your Blog
+          <h1 className="text-header  md:text-hero font-extrabold font-heading tracking-tight uppercase text-secondary mb-2 ">
+            Manage, Publish & Grow Your <span className="text-primary"> Blog </span>
           </h1>
           <p className="text-body text-gray-600 font-normal font-sans leading-relaxed">
             Write, schedule, publish, and track your blog performance from a
@@ -89,26 +91,24 @@ const Dashboard = () => {
             Keep your content organized and up to date
           </p>
           <div className="mt-5 flex items-center gap-5">
-            <Button
-              variant={"gradient"}
+            <FlowButton
+              variant={"filled"}
               onClick={() => navigate("/blog")}
-              height={50}
-              width={200}
+              text={"Get Started"}
+
             >
-              Get Started
-            </Button>
-            <Button
+
+            </FlowButton>
+            <FlowButton
               onClick={() => navigate("/blog")}
-              height={50}
-              width={200}
-              variant="shiny"
-              className="rounded-xl "
+              variant="outline"
+              text={"Explore Features"}
             >
-              Explore Features
-            </Button>
+
+            </FlowButton>
           </div>
         </div>
-        <div className="h-110  bg-gray-200 rounded-xl shadow-md flex items-center justify-center overflow-hidden">
+        <div className="h-64 sm:h-80 md:h-96 lg:h-[440px]   bg-gray-200 rounded-xl shadow-md flex items-center justify-center overflow-hidden">
           <img
             src={Image}
             alt="Dashboard Image"
@@ -117,9 +117,9 @@ const Dashboard = () => {
         </div>
       </section>
       <section className="h-full w-full mt-24">
-        <h1 className="text-header font-heading font-bold text-gray-900 ">
+        <h1 className="text-header font-heading font-bold text-secondary ">
           {" "}
-          <span className="text-primary">Our</span> Features
+          Our Features
         </h1>
         <motion.div
           initial="stacked"
@@ -129,7 +129,7 @@ const Dashboard = () => {
             delayChildren: 0.05,
             staggerChildren: 0.08
           }}
-          className=" relative w-full  min-h-75 flex items-center justify-center mt-3 ">
+          className=" hidden lg:flex relative w-full  min-h-75  items-center justify-center mt-3 ">
 
           {features.map((feature, index) => {
             const initialRotate = (index - 1) * 5;
@@ -171,11 +171,27 @@ const Dashboard = () => {
           }
           )}
         </motion.div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5  lg:hidden mt-8">
+          {features.map((feature) => (
+            <FeatureCard
+              key={feature.title}
+              icon={feature.icon}
+              title={feature.title}
+              description={feature.description}
+            />
+          ))}
+        </div>
       </section>
 
       <section className="h-full w-full mt-24 mb-2">
-        <h1 className="text-header font-heading font-bold  ">Featured <span className="text-primary">Blogs</span></h1>
-        <div className="w-full grid grid-cols-4 gap-5 mt-5">
+        <div className="w-full flex items-center justify-between">
+          <h1 className="text-header font-heading font-bold text-secondary ">Featured Blogs</h1>
+          <Link to={"/blog"} className="text-sm text-accent font-bold flex items-center  group hover:animate-pulse">
+            View all article
+            <ArrowRight size={16} className="text-sm  transform transition-all  group-hover:translate-x-2 duration-1000 " />
+          </Link>
+        </div>
+        <div className="w-full grid grid-cols-1 md:grid-cols-2  lg:grid-cols-4 gap-5 mt-5">
           {post.map((blog, index) => (
             <BlogCard
               key={index}
@@ -185,7 +201,7 @@ const Dashboard = () => {
               author={blog.author}
               category={blog.category}
               id={blog._id}
-              publishedAt={blog.careatedAt}
+              publishedAt={blog.createdAt}
 
             />
           ))}
@@ -193,7 +209,7 @@ const Dashboard = () => {
       </section>
 
       <section className="h-full w-full  mt-24 ">
-        <h1 className="text-header font-heading font-bold ">
+        <h1 className="text-header font-heading font-bold text-secondary">
           Frequently Asked Questions
         </h1>
         <div className="flex justify-center items-center mt-5 w-[100%] mx-auto mb-2 ">

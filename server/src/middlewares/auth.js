@@ -15,12 +15,12 @@ const generateJwt = (user) => {
 
 const authenticateJWT = (req, res, next) => {
 
-    const authHeader = req.cookies?.token
+    const authHeader = req.cookies?.accessToken
 
     if (!authHeader) {
-        return res.status(400).json({
+        return res.status(401).json({
             success: false,
-            message: "missing auth header"
+            message: "Unauthorized"
         })
     }
     if (authHeader) {
@@ -57,4 +57,27 @@ const requireRole = (...role) => {
     }
 }
 
-export { generateJwt, authenticateJWT, requireRole }
+const generateRefreshToken = (user) => {
+    const payload = {
+        id: user._id,
+        email: user.email,
+        role: user.role
+    }
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1d" })
+    return token
+}
+
+const generateAccessToken = (user) => {
+    const payload = {
+        id: user._id,
+        email: user.email,
+        role: user.role
+    }
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "15m" })
+    return token
+}
+
+
+export { generateJwt, authenticateJWT, requireRole, generateAccessToken, generateRefreshToken }

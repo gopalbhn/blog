@@ -90,18 +90,18 @@ const Blog = () => {
 
   return (
 
-    <div className='h-full w-full px-10'>
+    <div className='h-full w-full px-4 md:px-6 lg:px-10'>
 
-      <div className='h-30 w-full flex flex-col items-center justify-center mt-5'>
-        <h1 className=' font-heading font-bold text-header'>Discover Our Latest News </h1>
+      <div className='h-30 mt-15  w-full flex flex-col items-center justify-center lg:mt-5'>
+        <h1 className=' font-heading font-bold text-header text-center'>Discover Our Latest News </h1>
         <p className='text-body font-sans text-center  '>Stay informed with the latest news, insightful articles, and expert perspectives from our blog. <br />Explore trending topics, industry updates, and valuable stories designed to keep you connected and inspired.</p>
       </div>
 
-      <div className="h-20 w-full mt-5 flex items-center justify-center">
-        <div className="w-[70%] max-w-2xl flex items-center gap-3 transition-all duration-300">
+      <div className=" h-30 lg:h-20 w-full mt-15 lg:mt-5 flex items-center justify-center">
+        <div className=" h-full w-[90%] lg:w-[70%] max-w-2xl flex items-center gap-3 flex-col lg:flex-row  transition-all duration-300">
 
 
-          <div className="relative flex items-center h-12 flex-1 bg-background-light border border-secondary/20 rounded-xl shadow-sm group transition-all duration-300 focus-within:flex-[2]">
+          <div className="relative flex items-center  h-17 lg:h-12 flex-1 bg-background-light border border-secondary/20 rounded-xl shadow-sm group transition-all duration-300 focus-within:flex-[2]">
 
             <div className="absolute left-4 text-secondary/50 group-focus-within:text-secondary transition-colors duration-300">
               <svg xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5">
@@ -143,6 +143,7 @@ const Blog = () => {
                       setVisible('filter')
                       setCategory(item);
                       setCurrentIndex(4);
+                      
                     }}
                   >
                     {item}
@@ -161,7 +162,7 @@ const Blog = () => {
               <h3 className='text-title  font-bold text-secondary capitalize'>Science</h3>
 
             </div>
-            <div className=' grid grid-cols-4 gap-5 mt-10'>
+            <div className=' grid grid-cols-1 lg:grid-cols-4 gap-5 mt-10'>
 
               {science.map(blog => (
                 <BlogCard key={blog.title} title={blog.title} image={blog.image} category={blog.category} author={blog.author} excerpt={blog.description} publishedAt={blog.createdAt} id={blog._id} />
@@ -176,7 +177,7 @@ const Blog = () => {
               <h3 className='text-title  font-bold text-secondary capitalize'>Travel</h3>
 
             </div>
-            <div className='h-full w-full grid grid-cols-4 mt-10 '>
+            <div className='h-full w-full grid grid-cols-1 lg:grid-cols-4 gap-5 mt-10 '>
 
               {travel.map(blog => (
                 <BlogCard key={blog.title} title={blog.title} image={blog.image} category={blog.category} author={blog.author} excerpt={blog.description} publishedAt={blog.createdAt} id={blog._id} />
@@ -190,7 +191,7 @@ const Blog = () => {
               <h3 className='text-title  font-bold text-secondary capitalize'>Technology</h3>
 
             </div>
-            <div className='h-full w-full grid grid-cols-4 mt-10 '>
+            <div className='h-full w-full grid grid-cols-1 lg:grid-cols-4 gap-5 mt-10 '>
 
               {technology.map(blog => (
                 <BlogCard key={blog.title} title={blog.title} image={blog.image} category={blog.category} author={blog.author} excerpt={blog.description} publishedAt={blog.createdAt} id={blog._id} />
@@ -204,7 +205,7 @@ const Blog = () => {
               <h3 className='text-title  font-bold text-secondary capitalize'>Buisness</h3>
 
             </div>
-            <div className='h-full w-full grid grid-cols-4 mt-10 '>
+            <div className='h-full w-full grid grid-cols-1 lg:grid-cols-4 gap-5 mt-10 '>
 
               {buisness.map(blog => (
                 <BlogCard key={blog.title} title={blog.title} image={blog.image} category={blog.category} author={blog.author} excerpt={blog.description} publishedAt={blog.createdAt} id={blog._id} />
@@ -218,7 +219,7 @@ const Blog = () => {
               <h3 className='text-title  font-bold text-secondary capitalize'>Health</h3>
 
             </div>
-            <div className='h-full w-full grid grid-cols-4 mt-10 '>
+            <div className='h-full w-full grid grid-cols-1 lg:grid-cols-4 gap-5 mt-10 '>
 
               {health.map(blog => (
                 <BlogCard key={blog.title} title={blog.title} image={blog.image} category={blog.category} author={blog.author} excerpt={blog.description} publishedAt={blog.createdAt} id={blog._id} />
@@ -235,7 +236,7 @@ const Blog = () => {
         (
           <div className='  w-full mt-10   '>
             <h1 className='text-title font-bold text-secondary capitalize'>Category : {category}</h1>
-            <div className='h-full w-full grid grid-cols-4 gap-x-5 gap-y-10  mt-10'>
+            <div className='h-full w-full grid grid-cols-1 lg:grid-cols-4 gap-x-5 gap-y-10  mt-10'>
               {post.filter(blog => category === blog.category).slice(0, currentIndex).map(blog => (
 
 
@@ -264,7 +265,7 @@ const Blog = () => {
                 </p>
               </div>
             ) : (
-              <div className='h-full w-full grid grid-cols-4 gap-x-5 gap-y-10  mt-10'>
+              <div className='h-full w-full grid grid-cols lg:grid-cols-4 gap-x-5 gap-y-10  mt-10'>
                 {searchedPost.map(blog => (
 
 

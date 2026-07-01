@@ -72,7 +72,7 @@ const Comment = () => {
       />
       <SideBar open={open} />
       <section
-        className={`h-full    transition-all duration-300 ${open ? "ml-64 px-4 pt-4" : "ml-0 px-10 pt-4"}`}
+        className={`h-full  mb-10  transition-all duration-300 ${open ? "ml-64 px-4 pt-4" : "ml-0 px-10 pt-4"}`}
       >
         <div className="w-full flex justify-between ">
           <div className="flex items-center gap-2">

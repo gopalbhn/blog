@@ -87,7 +87,10 @@ const getSearchedPost = async (req, res) => {
 
         const searchedPost = await Post.find({
             title: { $regex: keyword, $options: "i" }, isDeleted: false
-        }).select("-isDeleted")
+        }).select("-isDeleted").populate({
+            path: "author",
+            select: "name -_id"
+        })
 
         if (searchedPost.length === 0) {
             return res.status(400).json({
@@ -470,7 +473,10 @@ const getAllComments = async (req, res) => {
 const AllFeaturedPost = async (req, res) => {
     const featuredPost = await Post.find({
         isFeatured: true
-    }).select('-isDeleted -comments').limit(4)
+    }).select('-isDeleted -comments').populate({
+        path: "author",
+        select: "name -_id"
+    }).limit(4)
     res.status(200).json({
         success: true,
         message: "Featured posts fetched successfully",
