@@ -1,7 +1,7 @@
 
 import './App.css'
 import NavBar from './components/navbar'
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Router, Routes, useLocation } from 'react-router-dom'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashbaord'
 import CheckEmail from './pages/CheckEmail'
@@ -22,6 +22,7 @@ import { useEffect } from 'react'
 import { postStore } from './store/postStore'
 import useUserStore from './store/userStore'
 import Profile from './pages/Profile'
+import AuthorRequest from './pages/admin/AuthorRequest'
 
 
 
@@ -40,12 +41,33 @@ const Init = () => {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/user/me`,
+        let res = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/user/me`,
           {
             method: "GET",
             credentials: 'include'
           }
         )
+
+        if (!res.ok) {
+          const refreshRes = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/user/refresh-token`,
+            {
+              method: "GET",
+              credentials: 'include'
+            }
+          )
+          if (!refreshRes.ok) {
+            setUser(null)
+            return
+          }
+          res = await fetch(
+            `${import.meta.env.VITE_BACKEND_URI}/api/user/me`,
+            {
+              method: "GET",
+              credentials: "include",
+            }
+          );
+        }
+
         const data = await res.json()
 
 
@@ -119,6 +141,7 @@ const Init = () => {
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/post" element={<AllPost />} />
             <Route path="/admin/users" element={<AllUser />} />
+            <Route path="/admin/author-requests" element={<AuthorRequest />} />
           </>
         )}
       </Routes>

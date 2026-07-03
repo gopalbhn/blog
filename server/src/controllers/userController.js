@@ -5,11 +5,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { google } from "googleapis";
 
-const oauth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  process.env.REDIRECT_URI
-);
+
 
 const registerUser = async (req, res) => {
   const { name, email, password, phoneNumber } = req.body;
@@ -56,7 +52,11 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  let { email, password } = req.body;
+
+  email = String(email)
+
+
   if (!email || !password) {
     return res.status(400).json({
       success: false,
@@ -133,8 +133,20 @@ const loginWithMagicLink = async (req, res) => {
 
 const googleLogin = (req, res) => {
 
-
-
+const oauth2Client = new google.auth.OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.REDIRECT_URI
+);
+  const state = crypto.randomUUID()
+  console.log(state)
+  res.cookie("oauth_state",state,{
+    httpOnly:true,
+    secure:true,
+    sameSite:"lax",
+    maxAge: 5*60*1000,
+  })
+  
   const scopes = [
     'https://www.googleapis.com/auth/userinfo.profile',
     'https://www.googleapis.com/auth/userinfo.email',
@@ -142,22 +154,44 @@ const googleLogin = (req, res) => {
   const url = oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: scopes,
+    state
   })
 
 
   res.redirect(url);
 };
 
+
 const googleCallback = async (req, res) => {
 
+  const oauth2Client = new google.auth.OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.REDIRECT_URI
+);
+  const { code,state } = req.query;
+  const storedState = req.cookies.oauth_state;
+  if(state !== storedState){
+    return res.status(400).json({
+      success:false,
+      message:"Invalid Oauth State",
+  })
+  }
 
-  const { code } = req.query;
+  res.clearCookie("oauth_state");
   const { tokens } = await oauth2Client.getToken(code);
   oauth2Client.setCredentials(tokens);
   const oauth2 = google.oauth2({ version: 'v2', auth: oauth2Client });
-  const userInfo = await oauth2.userinfo.get({ auth: oauth2Client });
+  const userInfo = await oauth2.userinfo.get();
 
+console.log("UserInfo",userInfo.data)
 
+  if(!userInfo.data.verified_email){
+       return res.status(403).json({
+        success: false,
+        message: "Google email is not verified",
+      });
+  }
   const user = await User.findOne({ email: userInfo.data.email });
   if (user) {
     const accessToken = generateAccessToken(user);
@@ -186,8 +220,15 @@ const googleCallback = async (req, res) => {
     isVerified: true,
   })
   await newUser.save();
-  const token = generateJwt(newUser);
-  res.cookie("token", token, {
+
+  const accessToken = generateAccessToken(newUser);
+  const refreshToken = generateRefreshToken(newUser);
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: true,
+    maxAge: 24 * 60 * 60 * 1000,
+  });
+  res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
     maxAge: 24 * 60 * 60 * 1000,
@@ -241,17 +282,14 @@ const LogOut = async (req, res) => {
   user.refreshToken = "";
   await user.save();
   res.clearCookie("accessToken", {
-    httpOnly: false,
-    sameSite: "none",
+    httpOnly: true,
     secure: true,
-    path: "/",
   });
   res.clearCookie("refreshToken", {
-    httpOnly: false,
-    sameSite: "none",
-    secure: true,
-    path: "/",
+       httpOnly: true,
+    secure: true,  
   });
+
   res.status(200).json({
     success: true,
     message: "User logged Out successfully",
@@ -274,7 +312,10 @@ const sendVerificationEmail = async (req, res) => {
       message: "User not found",
     });
   }
-  const token = generateJwt(email);
+   generateJwt(email);
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+    expiresIn: "1h"
+  });
   await sendMail(
     email,
     "Verification Email",
@@ -288,10 +329,10 @@ const sendVerificationEmail = async (req, res) => {
 
 const getInfo = async (req, res) => {
   try {
-
+     
     const user = await User.findById({ _id: req.user.id }).select('-password -isDeleted')
     if (!user) {
-      res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "User Not Found"
       })
@@ -303,7 +344,7 @@ const getInfo = async (req, res) => {
       user
     });
   } catch (error) {
-    res.status(200).json({
+    res.status(500).json({
       success: false,
       message: error.message
     })
@@ -311,7 +352,66 @@ const getInfo = async (req, res) => {
 }
 
 
+const refreshToken = async (req, res) => {
 
+  try {
+
+    const token = req.cookies?.refreshToken;
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Refresh token not found"
+      })
+    }
+
+    const IsVaildToken = await User.findOne({ refreshToken: token }).select("refreshToken")
+    if (!IsVaildToken) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token"
+      })
+    }
+
+
+    const userData = jwt.verify(token, process.env.JWT_SECRET);
+    if (!userData) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token"
+      })
+    }
+
+    const user = await User.findOne({ email: userData.email }).select("-isDeleted -password");
+
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    user.refreshToken = refreshToken;
+    await user.save();
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 15 * 60 * 1000
+
+    });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000
+
+    })
+    res.status(200).json({
+      success: true,
+      message: "Refresh token rotated successfully"
+    });
+
+
+  } catch (error) {
+    res.status(500).json({
+
+    })
+  }
+}
 
 
 export {
@@ -324,4 +424,5 @@ export {
   googleLogin,
   googleCallback,
   getInfo,
+  refreshToken
 };

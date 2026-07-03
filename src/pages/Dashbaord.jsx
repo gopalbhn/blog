@@ -60,9 +60,7 @@ const Dashboard = () => {
     <div className="min-h-screen  px-4 sm:px-6 md:px-8 lg:px-10 overflow-x-hidden ">
       <section className="h-full w-full grid grid-cols-1 lg:grid-cols-2 gap-10 items-start mt-10  bg-[radial-gradeint(circle at top left,#DBEAFE,transparent 40%),#f0f)] ">
         <div>
-          <p className="text-md font-semibold text-accent mb-2 flex items-center gap-2 ">
-            <span className="h-2 w-2 rounded-full bg-accent animate-pulse"></span> Trusted by 5,000+ Bloggers Worldwide
-          </p>
+
           <h1 className="text-header  md:text-hero font-extrabold font-heading tracking-tight uppercase text-secondary mb-2 ">
             Manage, Publish & Grow Your <span className="text-primary"> Blog </span>
           </h1>

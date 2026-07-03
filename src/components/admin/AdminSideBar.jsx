@@ -12,6 +12,7 @@ import {
     Menu,
     User,
     FileText,
+    UserPlus,
 } from "lucide-react";
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate, } from "react-router-dom";
@@ -28,6 +29,7 @@ const AdminSideBar = ({ open }) => {
         },
         { icon: FileText, label: "Posts", id: "posts", link: "/admin/post" },
         { icon: User, label: "Users", id: "user", link: "/admin/users" },
+        { icon: UserPlus, label: "Author requests", id: "author-requests", link: "/admin/author-requests" },
 
     ];
     const handleLogout = async () => {

@@ -4,7 +4,7 @@ import userRouter from "./routes/userRoute.js"
 import postRoute from "./routes/postRoute.js"
 import cookieParser from "cookie-parser";
 import adminRouter from './routes/adminRoute.js'
-
+import authorRequestRoute from './routes/authorRequestRoute.js'
 const app = express();
 app.use(cookieParser());
 app.use(cors({
@@ -16,6 +16,6 @@ app.use(express.json());
 
 app.use("/api/user", userRouter)
 app.use("/api/post", postRoute)
-app.use('/api/admin',adminRouter);
-
+app.use('/api/admin', adminRouter);
+app.use('/api/author', authorRequestRoute)
 export default app;

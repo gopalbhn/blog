@@ -43,11 +43,10 @@ const authenticateJWT = (req, res, next) => {
 }
 
 const requireRole = (...role) => {
-    const roles = ["Admin", "Author"]
+
     return (req, res, next) => {
-        // console.log("roles", role)
-        console.log("user role", req.user.role)
-        if (!roles.includes(req.user.role)) {
+ 
+        if (!role.includes(req.user.role)) {
             return res.status(403).json({
                 success: false,
                 message: "unauthorized"

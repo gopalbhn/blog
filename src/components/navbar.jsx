@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import GradientButton from "./ui/button-1";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./ui/button";
 import useUserStore from "@/store/userStore";
 import { toast } from "react-toastify";
@@ -23,7 +23,16 @@ export default function NavBar() {
         }
     }
 
-    window.addEventListener("scroll", changeColor)
+    useEffect(() => {
+    window.addEventListener("scroll", changeColor);
+
+    console.log("triggered")
+    changeColor();
+
+    return () => {
+        window.removeEventListener("scroll", changeColor);
+    };
+}, []);
     const path = useLocation();
 
     async function handleLogout() {

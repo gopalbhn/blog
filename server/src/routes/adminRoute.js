@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authenticateJWT, requireRole } from "../middlewares/auth.js";
 import { deleteComment, deletePost } from "../controllers/postController.js";
-import { deleteUser, demoteUser, getAllAdminPost, getAllUser, promoteUser, featurePost, unfeaturePost, recentUser, recentPost, publishPost, getAllDashboardStats, giveReview } from "../controllers/adminController.js";
+import { deleteUser, demoteUser, getAllAdminPost, getAllUser, promoteUser, featurePost, unfeaturePost, recentUser, recentPost, publishPost, getAllDashboardStats, giveReview, getAllPendingAuthorRequest, ApproveAuthorRequest, RejectAuthorRequest } from "../controllers/adminController.js";
 
 const router = new Router();
 
@@ -17,9 +17,12 @@ router.delete("/delete-post/:id", authenticateJWT, requireRole("Admin"), deleteP
 router.put("/feature/:id", authenticateJWT, requireRole("Admin"), featurePost)
 router.put("/unfeature/:id", authenticateJWT, requireRole("Admin"), unfeaturePost)
 router.put("/publish-post/:id", authenticateJWT, requireRole("Admin"), publishPost)
-// router.get('/dashboard-stats',authenticateJWT,requireRole("Admin"),getAllDashboardStats)
-router.get('/dashboard-stats', getAllDashboardStats)
-router.post('/review', authenticateJWT, requireRole('Admin'), giveReview)
+router.get('/dashboard-stats',authenticateJWT,requireRole("Admin"),getAllDashboardStats)
+// router.get('/dashboard-stats', getAllDashboardStats)
+router.post('/review:id', authenticateJWT, requireRole('Admin'), giveReview)
+router.get('/all-requests', authenticateJWT, requireRole("Admin"), getAllPendingAuthorRequest)
+router.put('/approve-request/:id', authenticateJWT, requireRole("Admin"), ApproveAuthorRequest)
+router.put('/reject-request/:id', authenticateJWT, requireRole("Admin"), RejectAuthorRequest)
 
 export default router
 

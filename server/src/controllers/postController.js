@@ -82,8 +82,11 @@ const getOnePost = async (req, res) => {
 const getSearchedPost = async (req, res) => {
     try {
 
-        const { keyword } = req.query;
-
+        let { keyword } = req.query;
+       
+        if(typeof keyword !== "string"){
+           keyword =  String(keyword)
+        }
 
         const searchedPost = await Post.find({
             title: { $regex: keyword, $options: "i" }, isDeleted: false
@@ -117,15 +120,20 @@ const getSearchedPost = async (req, res) => {
 const getPostByCategory = async (req, res) => {
 
     try {
-        const { category } = req.query;
+        let { category } = req.query;
+        
+        
 
-
-        if (!category) {
+        if (!category.trim()) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide category"
             })
 
+        }
+
+        if(typeof category !== "string"){
+            category = String(category)
         }
 
         const post = await Post.find({ category, isDeleted: false }).select("-isDeleted")
@@ -204,7 +212,8 @@ const createPost = async (req, res) => {
                 message: "Invalid category"
             });
         }
-        const imagePath = req.file?.path;
+        console.log(req.file)
+        const imagePath = req.file?.buffer;
         if (!imagePath) {
             return res.status(400).json({
                 success: false,
@@ -319,6 +328,12 @@ const deletePost = async (req, res) => {
             })
         }
 
+        if(post.author.toString() !== userId){
+            return res.status(400).json({
+                success:false,
+                message:"You are not authorized to update this post"
+            })
+        }
 
         post.isDeleted = true;
 
@@ -403,29 +418,7 @@ const addComents = async (req, res) => {
     }
 }
 
-const addComent = async (req, res) => {
-    const { id, content } = req.body;
-    const userId = req.params.id;
-    console.log("req.body", req.body);
-    console.log("req.params", req.params);
-    const post = await Post.findById(id);
-    if (!post || !post.commentsEnabled) {
-        return res.status(404).json({
-            message: "Post not found or comments are disabled",
-            success: false,
-        });
-    }
 
-    const comment = new Comment({
-        author: userId,
-        posts: post._id,
-        content,
-    });
-    post.comments.push(comment);
-    await post.save();
-    await comment.save();
-    res.status(201).json({ comment });
-};
 
 const getAllComments = async (req, res) => {
     try {
@@ -471,17 +464,25 @@ const getAllComments = async (req, res) => {
 
 
 const AllFeaturedPost = async (req, res) => {
-    const featuredPost = await Post.find({
-        isFeatured: true
-    }).select('-isDeleted -comments').populate({
-        path: "author",
-        select: "name -_id"
-    }).limit(4)
-    res.status(200).json({
-        success: true,
-        message: "Featured posts fetched successfully",
-        featuredPost
-    })
+    try{
+
+        const featuredPost = await Post.find({
+            isFeatured: true
+        }).select('-isDeleted -comments').populate({
+            path: "author",
+            select: "name -_id"
+        }).limit(4)
+        res.status(200).json({
+            success: true,
+            message: "Featured posts fetched successfully",
+            featuredPost
+        })
+    }catch(error){
+        res.status(500).json({
+           success:false,
+           message:error.message
+        })
+    }
 }
 
 

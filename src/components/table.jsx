@@ -32,6 +32,7 @@ import DeleteConfirmModal from "./DeleteConfirm";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import WriteSuggestion from "./admin/WriteSuggestion";
+import useUserStore from "@/store/userStore";
 
 export default function UnifiedTable({
   type,
@@ -44,6 +45,10 @@ export default function UnifiedTable({
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [reviewOpen, setReviewOpen] = useState(false)
   const navigate = useNavigate();
+
+  const user = useUserStore(state => state.user);
+  const userRole = user?.role;
+  console.log("user role",userRole)
 
   const handleAction = (action, item) => {
     onAction?.(action, item);
@@ -58,7 +63,12 @@ export default function UnifiedTable({
       handleUserRemove(deleteTarget.id)
     }
     if (type === "post") {
-      handlePostRemove(deleteTarget.id)
+      if(userRole == "Author"){
+        handlePostRemoveByAuthor(deleteTarget.id)
+
+      }else if(userRole == "Admin"){
+        handlePostRemoveByAdmin(deleteTarget.id)
+      }
     }
     setDeleteTarget(null)
     setShowConfirm(false)
@@ -100,11 +110,33 @@ export default function UnifiedTable({
       }, 500)
     }
   }
-  async function handlePostRemove(id) {
+  async function handlePostRemoveByAdmin(id) {
     setDeleteTarget(id)
     setShowConfirm(true)
     console.log('id del', id)
     const res = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/admin/delete-post/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    const data = await res.json();
+    if (data.success) {
+      toast.success(data.message)
+      setTimeout(() => {
+        window.location.reload()
+      }, 500)
+    }
+    else {
+      toast.error(data.message)
+    }
+  }
+    async function handlePostRemoveByAuthor(id) {
+    setDeleteTarget(id)
+    setShowConfirm(true)
+    console.log('id del', id)
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/post/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

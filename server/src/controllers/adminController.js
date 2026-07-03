@@ -1,3 +1,4 @@
+import AuthorRequest from "../models/authorRequestSchema.js";
 import Post from "../models/postSchema.js";
 import Review from "../models/reviewSchems.js";
 import User from "../models/userSchema.js";
@@ -402,6 +403,81 @@ const getAllDashboardStats = async (req, res) => {
   }
 }
 
+const getAllPendingAuthorRequest = async (req, res) => {
+  try {
+    const authorRequests = await AuthorRequest.find({ status: "pending" }).populate({
+      path: 'userId',
+      select: 'name email -_id'
+    })
+    res.status(200).json({
+      success: true,
+      authorRequests
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
+
+const ApproveAuthorRequest = async (req, res) => {
+  try {
+    const requestId = req.params.id;
+    const authorRequest = await AuthorRequest.findById(requestId);
+    if (!authorRequest) {
+      return res.status(404).json({
+        success: false,
+        message: "Author Request not found"
+      })
+    }
+    const user = await User.findById(authorRequest.userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      })
+    }
+    user.role = "Author";
+    await user.save();
+    authorRequest.status = "aproved";
+    await authorRequest.save();
+    res.status(200).json({
+      success: true,
+      message: "Author Request approved successfully"
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
+
+const RejectAuthorRequest = async (req, res) => {
+  try {
+    const requestId = req.params.id;
+    const authorRequest = await AuthorRequest.findById(requestId);
+    if (!authorRequest) {
+      return res.status(404).json({
+        success: false,
+        message: "Author Request not found"
+      })
+    }
+    authorRequest.status = "rejected";
+    await authorRequest.save();
+    res.status(200).json({
+      success: true,
+      message: "Author Request rejected successfully"
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
+
 export {
   recentUser,
   recentPost,
@@ -415,5 +491,8 @@ export {
   getAllComments,
   getAllAdminPost,
   getAllDashboardStats,
-  giveReview
+  giveReview,
+  getAllPendingAuthorRequest,
+  ApproveAuthorRequest,
+  RejectAuthorRequest
 }

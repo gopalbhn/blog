@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { LogOut, verifyMagicLink, registerUser, loginUser, googleLogin, googleCallback, sendVerificationEmail, getInfo } from "../controllers/userController.js"
+import { LogOut, verifyMagicLink, registerUser, loginUser, googleLogin, googleCallback, sendVerificationEmail, getInfo, refreshToken } from "../controllers/userController.js"
 import { authenticateJWT, } from "../middlewares/auth.js";
 
 
@@ -15,5 +15,5 @@ router.get("/verify/:token", verifyMagicLink);
 router.post("/logout", authenticateJWT, LogOut)
 router.post('/verification-email', sendVerificationEmail)
 router.get("/me", authenticateJWT, getInfo)
-
+router.get('/refresh-token', refreshToken);
 export default router;

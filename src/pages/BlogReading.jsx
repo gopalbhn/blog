@@ -136,7 +136,7 @@ const BlogReading = () => {
             </div> */}
             {paragraph.map((p, index) => (
                 <div key={index} className="flex flex-col gap-2 mt-5">
-                    <p>{p}</p>
+                    <p>{blog.description}</p>
                     {index == 0 && (
                         <img
                             src={blog.image}

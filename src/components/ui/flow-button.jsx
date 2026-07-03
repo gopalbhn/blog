@@ -12,7 +12,7 @@ const buttonVariant = {
     'group relative flex items-center justify-center overflow-hidden rounded-xl bg-primary px-8 py-4 w-50 text-sm font-semibold text-white cursor-pointer transition-all duration-[600ms] ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.95]',
 
   outline:
-    'group relative flex items-center justify-center overflow-hidden rounded-xl border border-primary bg-transparent px-6 py-4 w-50 text-sm font-semibold text-primary cursor-pointer transition-colors duration-300 hover:bg-primary hover:text-white active:scale-[0.95]',
+    'group relative flex items-center justify-center overflow-hidden rounded-xl border border-primary bg-transparent px-8 py-4 w-50 text-sm font-semibold text-primary cursor-pointer transition-colors duration-300 hover:bg-primary hover:text-white active:scale-[0.95]',
 
   gradient:
     'group relative flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-primary to-primary-hover px-8 py-4 text-sm font-semibold text-white cursor-pointer transition-all duration-[600ms] ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.95]',
